@@ -2,14 +2,13 @@
 title: "enFeLV-exFeLV RNAseq: data and code repo"
 author: "Cait McDonald"
 output: 
-  html_document:
-    toc: true
-    toc_depth: 3
-    df_print: paged
-    keep_md: true
   github_document:
     toc: true
     toc_depth: 3
+  # html_document:
+  #   toc: true
+  #   toc_depth: 3
+  #   df_print: paged
 #bibliography: references.bib
 ---
 
