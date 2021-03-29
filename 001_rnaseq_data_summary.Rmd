@@ -1,0 +1,22 @@
+---
+title: "RNAseq data summary"
+author: "Cait McDonald"
+date: "Last Updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+#bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+start_time <- Sys.time()
+```
+
+```{r, message=FALSE}
+library(tidyverse)
+library(here)
+dir.create("outputs/001", recursive = TRUE, showWarnings = FALSE)
+dir.create("intermediates/001", recursive = TRUE, showWarnings = FALSE)
+```
