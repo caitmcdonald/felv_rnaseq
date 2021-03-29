@@ -13,14 +13,9 @@ output:
 #bibliography: references.bib
 ---
 
-**last updated:** `r Sys.Date()`
+**last updated:** 2021-03-29
 
-```{r setup, include=FALSE, message=FALSE}
-library(tidyverse)
-library(hms)
 
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Overview
 
