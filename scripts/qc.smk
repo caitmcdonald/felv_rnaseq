@@ -1,17 +1,20 @@
-import glob, sys
+import glob, sys #following Eric A--omg PYTHON exciting!!!
 
 fullnames= glob.glob('/data/*.fastq.gz')
 
+# get sample name without .fastq.gz
 sample= []
 for name in fullnames:
     base= name.split('.')[0]
     sample.append(base)
 
+# get base name without R1 or R2
 basename= []
 for read in sample:
     noR= read.split('_')[0] + '_' + read.split('_')[1]
     basename.append(noR)
 
+# don't totally understand this rule yet...
 rule all:
     input:
         #the last output
