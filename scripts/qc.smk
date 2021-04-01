@@ -59,6 +59,8 @@ rule fastqc_trim:
     output:
         "/results/fastqc/trimmed/{sample}.trimmed_fastqc.zip",
         "/results/fastqc/trimmed/{sample}.trimmed_fastqc.html"
+    shell:
+        "fastqc {input}"
 
 rule multiqc_trim:
     input:
@@ -66,3 +68,5 @@ rule multiqc_trim:
     output:
         "/results/multiqc/trimmed/multiqc_report.html",
         #directory("/results/multiqc/trimmed/multiqc_data")
+    shell:
+        "multiqc {input}"
