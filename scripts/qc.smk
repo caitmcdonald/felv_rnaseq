@@ -18,8 +18,8 @@ for read in sample:
 rule all:
     input:
         #the last output
-#    conda:
-#        "felv_rna.yml"
+    conda:
+        "felv_rna.yml"
 
 
 rule fastqc_raw:
