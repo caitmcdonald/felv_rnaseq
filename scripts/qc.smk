@@ -15,9 +15,10 @@ for read in sample:
     basename.append(noR)
 
 # don't totally understand this rule yet...
-#rule all:
-#    input:
+rule all:
+    input:
         #the last output
+        "/results/multiqc/trimmed/multiqc_report.html"
 
 rule fastqc_raw:
     input:
