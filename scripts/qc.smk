@@ -64,4 +64,4 @@ rule multiqc_trim:
         "/results/fastqc/trimmed/"
     output:
         "/results/multiqc/trimmed/multiqc_report.html",
-        directory("/results/multiqc/trimmed/multiqc_data")
+        #directory("/results/multiqc/trimmed/multiqc_data")
