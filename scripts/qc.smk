@@ -18,6 +18,9 @@ for read in sample:
 rule all:
     input:
         #the last output
+    conda:
+        "felv_rna.yml"
+
 
 rule fastqc_raw:
     input:
@@ -25,8 +28,6 @@ rule fastqc_raw:
     output:
         "/results/fastqc/raw/{sample}.html",
         "/results/fastqc/raw/{sample}.zip"
-    conda:
-        "felv_rna.yml"
     log:
         "logs/fastqc/raw/{sample}.log"
     shell:

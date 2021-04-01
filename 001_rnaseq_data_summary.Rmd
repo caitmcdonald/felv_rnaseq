@@ -20,6 +20,8 @@ library(tidyverse)
 library(here)
 # dir.create("outputs/001", recursive = TRUE, showWarnings = FALSE)
 # dir.create("intermediates/001", recursive = TRUE, showWarnings = FALSE)
+dir.create("scripts", recursive = TRUE, showWarnings = FALSE)
+
 ```
 
 ## Overview
