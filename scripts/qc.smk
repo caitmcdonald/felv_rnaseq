@@ -57,8 +57,8 @@ rule fastqc_trim:
     input:
         "/results/trimming/{sample}.trimmed.fastq.gz"
     output:
-        "results/fastqc/trimmed/{sample}.trimmed_fastqc.zip",
-        "results/fastqc/trimmed/{sample}.trimmed_fastqc.html"
+        "/results/fastqc/trimmed/{sample}.trimmed_fastqc.zip",
+        "/results/fastqc/trimmed/{sample}.trimmed_fastqc.html"
 
 rule multiqc_trim:
     input:
