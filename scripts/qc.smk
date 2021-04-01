@@ -26,7 +26,7 @@ rule fastqc_raw:
         "/results/fastqc/raw/{sample}.html",
         "/results/fastqc/raw/{sample}.zip"
     conda:
-        "felv_rna.yml"        
+        "felv_rna.yml"
     log:
         "logs/fastqc/raw/{sample}.log"
     shell:
@@ -37,7 +37,7 @@ rule multiqc_raw:
         "/results/fastqc/raw/"
     output:
         "/results/multiqc/raw/multiqc_report.html",
-        directory("/results/multiqc/raw/multiqc_data")
+        #directory("/results/multiqc/raw/multiqc_data")
     shell:
         "multiqc {input}"
 
