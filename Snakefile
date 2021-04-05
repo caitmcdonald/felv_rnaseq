@@ -43,14 +43,14 @@ rule fastqc_raw:
     shell:
         "(fastqc {input}) 2> {log}"
 
-# rule multiqc_raw:
-#     input:
-#         "/results/fastqc/raw/"
-#     output:
-#         "/results/multiqc/raw/multiqc_report.html",
-#         #directory("/results/multiqc/raw/multiqc_data")
-#     shell:
-#         "multiqc {input}"
+rule multiqc_raw:
+    input:
+        "results/fastqc/raw/"
+    output:
+        "results/multiqc/raw/multiqc_report.html",
+        directory("results/multiqc/raw/multiqc_data")
+    shell:
+        "multiqc {input}"
 
 # rule cutadapt:
 #     input:
