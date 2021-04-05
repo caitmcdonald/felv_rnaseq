@@ -22,10 +22,11 @@
 configfile: "config.yaml"
 
 # don't totally understand this rule yet...
-# rule all:
-#     input:
-#         #the last output
-#         "/results/multiqc/trimmed/multiqc_report.html"
+rule all:
+    input:
+        #the last output
+        "results/multiqc/raw/multiqc_report.html",
+        directory("results/multiqc/multiqc_data")
 
 rule fastqc_raw:
     input:
