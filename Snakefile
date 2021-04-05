@@ -29,9 +29,9 @@ configfile: "config.yaml"
 
 rule fastqc_raw:
     input:
-        "/data/{sample}.fastq.gz"
+        # "/data/{sample}.fastq.gz"
         # get_fastqc_input_fastqs
-        # lambda wildcards: config["samples"][wildcards.samples]
+        lambda wildcards: config["samples"][wildcards.samples]
     output:
         "/results/fastqc/raw/{sample}.html",
         "/results/fastqc/raw/{sample}.zip"
