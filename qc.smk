@@ -55,7 +55,8 @@ rule trimgalore:
 
 rule fastqc_trim:
     input:
-        "/results/trimming/{sample}.trimmed.fastq.gz"
+        "/results/trimming/{basename}_val_1.fastq.gz",
+        "/results/trimming/{basename}_val_2.fastq.gz"
     output:
         "/results/fastqc/trimmed/{sample}.trimmed_fastqc.zip",
         "/results/fastqc/trimmed/{sample}.trimmed_fastqc.html"
