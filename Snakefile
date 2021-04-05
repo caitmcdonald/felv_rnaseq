@@ -33,10 +33,10 @@ rule fastqc_raw:
         # get_fastqc_input_fastqs
         lambda wildcards: config["samples"][wildcards.sample]
     output:
-        "/results/fastqc/raw/{sample}.html",
-        "/results/fastqc/raw/{sample}.zip"
+        "results/fastqc/raw/{sample}.html",
+        "results/fastqc/raw/{sample}.zip"
     conda:
-        "qctrim.yml"
+        "qctrim.yaml"
     log:
         "logs/fastqc/raw/{sample}.log"
     threads: 1
