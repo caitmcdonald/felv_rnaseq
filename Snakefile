@@ -30,21 +30,21 @@ configfile: "config.yaml"
 rule all:
     input:
         #the last output
-        "/results/fastqc/raw/{sample}.html",
-        "/results/fastqc/raw/{sample}.zip"
+        "/results/fastqc/raw/{samples}.html",
+        "/results/fastqc/raw/{samples}.zip"
 
 rule fastqc_raw:
     input:
         # "/data/{sample}.fastq.gz"
         # get_fastqc_input_fastqs
-        lambda wildcards: config["samples"][wildcards.sample]
+        lambda wildcards: config["samples"][wildcards.samples]
     output:
-        "/results/fastqc/raw/{sample}.html",
-        "/results/fastqc/raw/{sample}.zip"
+        "/results/fastqc/raw/{samples}.html",
+        "/results/fastqc/raw/{samples}.zip"
     conda:
         "qctrim.yml"
     log:
-        "logs/fastqc/raw/{sample}.log"
+        "logs/fastqc/raw/{samples}.log"
     threads: 1
     shell:
         "(fastqc {input}) 2> {log}"
