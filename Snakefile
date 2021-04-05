@@ -27,6 +27,12 @@ configfile: "config.yaml"
 #         #the last output
 #         "/results/multiqc/trimmed/multiqc_report.html"
 
+rule all:
+    input:
+        #the last output
+        "/results/fastqc/raw/{sample}.html",
+        "/results/fastqc/raw/{sample}.zip"
+
 rule fastqc_raw:
     input:
         # "/data/{sample}.fastq.gz"
