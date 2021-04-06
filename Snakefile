@@ -42,7 +42,7 @@ rule fastqc_raw:
         # "data/samples/{sample}.fastq.gz"
         # get_fastqc_input_fastqs
         # lambda wildcards: config["samples"][wildcards.sample]
-        metadata.loc[wildcards.sample_id, "fastq"]
+        "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
     output:
         "results/fastqc/raw/{sample_id}.html",
         "results/fastqc/raw/{sample_id}.zip"
