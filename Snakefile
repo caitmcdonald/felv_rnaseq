@@ -17,9 +17,9 @@
 #     basename.append(noR)
 
 ### Approach 2: import metadata as pandas df
-import pandas as pd
+# import pandas as pd
 #
-metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=False)
+# metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=False)
 # fastq_list = metadata['fastq'].tolist() #stores column as list of attributes
 # Integrating pandas df with snakemake supposedly:
 # input:
@@ -39,15 +39,15 @@ configfile: "config.yaml"
 
 # testing:
 
-def get_fastqc_input_fastqs(wildcards):
-    return config["samples"][wildcards.sample_id]
+# def get_fastqc_input_fastqs(wildcards):
+#     return config["samples"][wildcards.sample_id]
 
 rule fastqc_raw:
     input:
         # "data/samples/{sample}.fastq.gz"
-        get_fastqc_input_fastqs
-        # lambda wildcards: config["samples"][wildcards.sample]
-        # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
+        # get_fastqc_input_fastqs
+        lambda wildcards: config["samples"][wildcards.sample_id]
+        # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute, but not with a list of all sample_ids.
     output:
         "results/fastqc/raw/{sample_id}.html",
         "results/fastqc/raw/{sample_id}.zip"
