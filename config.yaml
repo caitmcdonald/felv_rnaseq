@@ -1,5 +1,5 @@
 samples:
-    4438_R1: data/samples/4438_S1_L002_R1_001.fastq.gz
+    4438_S1_L002_R1_001: data/samples/4438_S1_L002_R1_001.fastq.gz
     4438_R2: data/samples/4438_S1_L002_R2_001.fastq.gz
     4460_R1: data/samples/4460_S2_L002_R1_001.fastq.gz
     4460_R2: data/samples/4460_S2_L002_R2_001.fastq.gz
