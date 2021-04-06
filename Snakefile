@@ -43,12 +43,12 @@ rule fastqc_raw:
         # lambda wildcards: config["samples"][wildcards.sample]
         lambda wildcards: metadata.fastq[wildcards.sample_id]
     output:
-        "results/fastqc/raw/{sample}.html",
-        "results/fastqc/raw/{sample}.zip"
+        "results/fastqc/raw/{sample_id}.html",
+        "results/fastqc/raw/{sample_id}.zip"
     conda:
         "qctrim.yaml"
     log:
-        "logs/fastqc/raw/{sample}.log"
+        "logs/fastqc/raw/{sample_id}.log"
     threads: 1
     shell:
         "(fastqc {input}) 2> {log}"
