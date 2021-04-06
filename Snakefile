@@ -1,5 +1,4 @@
 ### Approach 1: use Python to mess with file names to make them easier for wildcards:
-
 # import glob, sys #following Eric A--omg PYTHON exciting!!!
 #
 # fullnames= glob.glob('/data/*.fastq.gz')
@@ -16,7 +15,8 @@
 #     noR= read.split('_')[0] + '_' + read.split('_')[1]
 #     basename.append(noR)
 
-### Approach 2: import metadata as pandas df
+
+### Approach 2: import metadata as pandas df, create wildcards object for input function
 # import pandas as pd
 #
 # metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=False)
@@ -34,19 +34,20 @@
 # wildcards.sample_id= metadata.loc["4438_R1", "sample_id"]
 
 ### Approach 3: just list all the samples in a config file
+# configfile: "config.yaml"
 
-configfile: "config.yaml"
-
-# testing:
-
+# define an input function
 # def get_fastqc_input_fastqs(wildcards):
 #     return config["samples"][wildcards.sample_id]
 
+def get_fastqc_input_fastqs(wildcards):
+    return "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
+
 rule fastqc_raw:
     input:
-        # "data/samples/{sample}.fastq.gz"
-        # get_fastqc_input_fastqs
-        lambda wildcards: config["samples"][wildcards.sample_id]
+        # "data/samples/{sample}.fastq.gz" #works when use full name, not key as in config
+        # get_fastqc_input_fastqs #works
+        lambda wildcards: config["samples"][wildcards.sample_id] #works
         # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute, but not with a list of all sample_ids.
     output:
         "results/fastqc/raw/{sample_id}.html",
