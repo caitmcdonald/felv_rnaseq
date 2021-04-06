@@ -24,6 +24,12 @@ metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=F
 # Integrating pandas df with snakemake supposedly:
 # input:
     # lambda wildcards, output: metadata.fastq[wildcards.sample_id]
+class Foo(object):
+    pass
+
+wildcards= Foo()
+
+wildcards.sample= metadata['sample_id'].tolist()
 
 ### Approach 3: just list all the samples in a config file
 
