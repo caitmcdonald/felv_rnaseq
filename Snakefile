@@ -28,39 +28,57 @@
 
 ### Approach 3: just list all the samples in a config file
 
-configfile: "config.yaml"
+# configfile: "config.yaml"
 
-# don't totally understand this rule yet...cannot have wildcards within target rule
-rule all:
-    input:
-        #the last output
-        "results/multiqc/raw/multiqc_report.html",
-        directory("results/multiqc/raw/multiqc_data")
-
+# testing:
 rule fastqc_raw:
     input:
-        # "/data/{sample}.fastq.gz"
+        "/data/samples/4438_S1_L002_R1_001.fastq.gz"
         # get_fastqc_input_fastqs
-        lambda wildcards: config["samples"][wildcards.sample]
+        # lambda wildcards: config["samples"][wildcards.sample]
     output:
-        "results/fastqc/raw/{sample}.html",
-        "results/fastqc/raw/{sample}.zip"
+        "results/fastqc/raw/4438_S1_L002_R1_001.html",
+        "results/fastqc/raw/4438_S1_L002_R1_001.zip"
     conda:
         "qctrim.yaml"
     log:
-        "logs/fastqc/raw/{sample}.log"
+        "logs/fastqc/raw/4438_S1_L002_R1_001.log"
     threads: 1
     shell:
-        "(fastqc {input}) 2> {log}"
+        "(fastqc 4438_S1_L002_R1_001.fastq.gz) 2> {log}"
 
-rule multiqc_raw:
-    input:
-        "results/fastqc/raw"
-    output:
-        "results/multiqc/raw/multiqc_report.html",
-        directory("results/multiqc/raw/multiqc_data")
-    shell:
-        "multiqc {input}"
+
+# don't totally understand this rule yet...cannot have wildcards within target rule
+# rule all:
+#     input:
+#         #the last output
+#         "results/multiqc/raw/multiqc_report.html",
+#         directory("results/multiqc/raw/multiqc_data")
+#
+# rule fastqc_raw:
+#     input:
+#         # "/data/{sample}.fastq.gz"
+#         # get_fastqc_input_fastqs
+#         lambda wildcards: config["samples"][wildcards.sample]
+#     output:
+#         "results/fastqc/raw/{sample}.html",
+#         "results/fastqc/raw/{sample}.zip"
+#     conda:
+#         "qctrim.yaml"
+#     log:
+#         "logs/fastqc/raw/{sample}.log"
+#     threads: 1
+#     shell:
+#         "(fastqc {input}) 2> {log}"
+#
+# rule multiqc_raw:
+#     input:
+#         "results/fastqc/raw"
+#     output:
+#         "results/multiqc/raw/multiqc_report.html",
+#         directory("results/multiqc/raw/multiqc_data")
+#     shell:
+#         "multiqc {input}"
 
 # rule cutadapt:
 #     input:
