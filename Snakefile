@@ -39,18 +39,21 @@ metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=F
 ##########
 
 # define an input function
-# def get_fastqc_input_fastqs(wildcards):
+
+# using config file:
+# def get_input_fastqs(wildcards):
 #     return config["samples"][wildcards.sample_id]
 
-# def get_fastqc_input_fastqs(wildcards):
-#     return "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
+# using pandas:
+def get_input_fastqs(wildcards):
+    return "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
 
 rule fastqc_raw:
     input:
         # "data/samples/{sample}.fastq.gz" #works when use full name, not key as in config
-        get_fastqc_input_fastqs #works with both definitions!!!
+        get_input_fastqs #works with both definitions!!!
         # lambda wildcards: config["samples"][wildcards.sample_id] #works
-        "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute, but not with a list of all sample_ids.
+        # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute as in wildcards.sample_id= metadata.loc["4438_R1", "sample_id"], but not with a list of all sample_ids.
     output:
         "results/fastqc/raw/{sample_id}.html",
         "results/fastqc/raw/{sample_id}.zip"
@@ -61,6 +64,15 @@ rule fastqc_raw:
     threads: 1
     shell:
         "(fastqc {input}) 2> {log}"
+
+rule multiqc_raw:
+    input:
+        "results/fastqc/raw"
+    output:
+        "results/multiqc/raw/multiqc_report.html",
+        directory("results/multiqc/raw/multiqc_data")
+    shell:
+        "multiqc {input}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
