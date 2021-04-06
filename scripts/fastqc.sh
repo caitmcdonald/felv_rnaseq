@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --mem-per-cpu 800
+#SBATCH --mem 5GB
 #SBATCH --time=02:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=cait.mcdonald@colostate.edu
