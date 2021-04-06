@@ -30,6 +30,8 @@
 
 # configfile: "config.yaml"
 
+
+
 # testing:
 rule fastqc_raw:
     input:
@@ -45,7 +47,7 @@ rule fastqc_raw:
         "logs/fastqc/raw/{sample}.log"
     threads: 1
     shell:
-        "(fastqc {sample}.fastq.gz) 2> {log}"
+        "(fastqc {input}) 2> {log}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
