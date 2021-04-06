@@ -36,19 +36,21 @@ metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=F
 ### Approach 3: just list all the samples in a config file
 # configfile: "config.yaml"
 
+##########
+
 # define an input function
 # def get_fastqc_input_fastqs(wildcards):
 #     return config["samples"][wildcards.sample_id]
 
-def get_fastqc_input_fastqs(wildcards):
-    return "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
+# def get_fastqc_input_fastqs(wildcards):
+#     return "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
 
 rule fastqc_raw:
     input:
         # "data/samples/{sample}.fastq.gz" #works when use full name, not key as in config
-        get_fastqc_input_fastqs #works
+        get_fastqc_input_fastqs #works with both definitions!!!
         # lambda wildcards: config["samples"][wildcards.sample_id] #works
-        # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute, but not with a list of all sample_ids.
+        "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute, but not with a list of all sample_ids.
     output:
         "results/fastqc/raw/{sample_id}.html",
         "results/fastqc/raw/{sample_id}.zip"
