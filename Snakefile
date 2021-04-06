@@ -33,7 +33,7 @@
 # testing:
 rule fastqc_raw:
     input:
-        "/data/samples/4438_S1_L002_R1_001.fastq.gz"
+        "data/samples/4438_S1_L002_R1_001.fastq.gz"
         # get_fastqc_input_fastqs
         # lambda wildcards: config["samples"][wildcards.sample]
     output:
