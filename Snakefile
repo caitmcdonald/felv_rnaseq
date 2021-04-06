@@ -24,12 +24,13 @@ metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=F
 # Integrating pandas df with snakemake supposedly:
 # input:
     # lambda wildcards, output: metadata.fastq[wildcards.sample_id]
-class Foo(object):
-    pass
 
-wildcards= Foo()
+# class Foo(object):
+#     pass
+#
+# wildcards= Foo()
 
-wildcards.sample_id= metadata['sample_id'].tolist()
+# wildcards.sample_id= metadata['sample_id'].tolist()
 # wildcards.sample_id= metadata.loc["4438_R1", "sample_id"]
 
 ### Approach 3: just list all the samples in a config file
@@ -37,12 +38,16 @@ wildcards.sample_id= metadata['sample_id'].tolist()
 configfile: "config.yaml"
 
 # testing:
+
+def get_fastqc_input_fastqs(wildcards):
+    return config["samples"][wildcards.sample_id]
+
 rule fastqc_raw:
     input:
         # "data/samples/{sample}.fastq.gz"
-        # get_fastqc_input_fastqs
+        get_fastqc_input_fastqs
         # lambda wildcards: config["samples"][wildcards.sample]
-        "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
+        # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
     output:
         "results/fastqc/raw/{sample_id}.html",
         "results/fastqc/raw/{sample_id}.zip"
