@@ -59,11 +59,12 @@ rule fastqc_raw:
         "results/fastqc/raw/{sample_id}.zip"
     conda:
         "qctrim.yaml"
-    log:
-        "logs/fastqc/raw/{sample_id}.log"
+    # log:
+    #     "logs/fastqc/raw/{sample_id}.log"
     threads: 1
     shell:
-        "(fastqc {input}) 2> {log}"
+        # "(fastqc {input}) 2> {log}"
+        "fastqc {input}"
 
 # rule multiqc_raw:
 #     input:
