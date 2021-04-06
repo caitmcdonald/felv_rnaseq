@@ -48,7 +48,7 @@ metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=F
 def get_input_fastqs(wildcards):
     return "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
 
-rule fastqc_raw:
+rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snakemake
     input:
         # "data/samples/{sample}.fastq.gz" #works when use full name, not key as in config
         get_input_fastqs #works with both definitions!!!
@@ -65,17 +65,17 @@ rule fastqc_raw:
     shell:
         "(fastqc {input}) 2> {log}"
 
-# rule multiqc_raw:
-#     input:
-#         "results/fastqc/raw"
-#     output:
-#         results="results/multiqc/raw/multiqc_report.html",
-#         direct=directory("results/multiqc/raw")
-#     conda:
-#         "qctrim.yaml"
-#     threads: 1
-#     shell:
-#         "multiqc {input} -o {output.direct} -n {output.results}"
+rule multiqc_raw: #multiqc works when conda activate qctrim.yaml, but not via snakemake
+    input:
+        "results/fastqc/raw"
+    output:
+        report="results/multiqc/raw/multiqc_report.html",
+        direct=directory("results/multiqc/raw")
+    conda:
+        "qctrim.yaml"
+    threads: 1
+    shell:
+        "multiqc {input} -o {output.direct} -n {output.report}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
