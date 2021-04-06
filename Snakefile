@@ -29,8 +29,8 @@ class Foo(object):
 
 wildcards= Foo()
 
-# wildcards.sample_id= metadata['sample_id'].tolist()
-wildcards.sample_id= metadata.loc["4438_R1", "sample_id"]
+wildcards.sample_id= metadata['sample_id'].tolist()
+# wildcards.sample_id= metadata.loc["4438_R1", "sample_id"]
 
 ### Approach 3: just list all the samples in a config file
 
