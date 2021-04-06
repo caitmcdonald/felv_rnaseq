@@ -46,8 +46,8 @@ def get_fastqc_input_fastqs(wildcards):
 rule fastqc_raw:
     input:
         # "data/samples/{sample}.fastq.gz" #works when use full name, not key as in config
-        # get_fastqc_input_fastqs #works
-        lambda wildcards: config["samples"][wildcards.sample_id] #works
+        get_fastqc_input_fastqs #works
+        # lambda wildcards: config["samples"][wildcards.sample_id] #works
         # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute, but not with a list of all sample_ids.
     output:
         "results/fastqc/raw/{sample_id}.html",
