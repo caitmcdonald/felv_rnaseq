@@ -28,16 +28,14 @@
 
 ### Approach 3: just list all the samples in a config file
 
-# configfile: "config.yaml"
-
-
+configfile: "config.yaml"
 
 # testing:
 rule fastqc_raw:
     input:
-        "data/samples/{sample}.fastq.gz"
+        # "data/samples/{sample}.fastq.gz"
         # get_fastqc_input_fastqs
-        # lambda wildcards: config["samples"][wildcards.sample]
+        lambda wildcards: config["samples"][wildcards.sample]
     output:
         "results/fastqc/raw/{sample}.html",
         "results/fastqc/raw/{sample}.zip"
