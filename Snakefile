@@ -1,3 +1,5 @@
+### Approach 1: use Python to mess with file names to make them easier for wildcards:
+
 # import glob, sys #following Eric A--omg PYTHON exciting!!!
 #
 # fullnames= glob.glob('/data/*.fastq.gz')
@@ -14,19 +16,26 @@
 #     noR= read.split('_')[0] + '_' + read.split('_')[1]
 #     basename.append(noR)
 
+### Approach 2: import metadata as pandas df
 # Import metadata
 # import pandas as pd
 #
 # metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=False)
+# fastq_list = metadata['fastq'].tolist() #stores column as list of attributes
+# Integrating pandas df with snakemake supposedly:
+# input:
+    # lambda wildcards, output: metadata.fastq[wildcards.sample_id]
+
+### Approach 3: just list all the samples in a config file
 
 configfile: "config.yaml"
 
-# don't totally understand this rule yet...
+# don't totally understand this rule yet...cannot have wildcards within target rule
 rule all:
     input:
         #the last output
         "results/multiqc/raw/multiqc_report.html",
-        directory("results/multiqc/multiqc_data")
+        directory("results/multiqc/raw/multiqc_data")
 
 rule fastqc_raw:
     input:
