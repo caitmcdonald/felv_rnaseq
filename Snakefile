@@ -59,24 +59,23 @@ rule fastqc_raw:
         "results/fastqc/raw/{sample_id}.zip"
     conda:
         "qctrim.yaml"
-    # log:
-    #     "logs/fastqc/raw/{sample_id}.log"
+    log:
+        "logs/fastqc/raw/{sample_id}.log"
     threads: 1
     shell:
-        # "(fastqc {input}) 2> {log}"
-        "fastqc {input}"
+        "(fastqc {input}) 2> {log}"
 
-# rule multiqc_raw:
-#     input:
-#         "results/fastqc/raw"
-#     output:
-#         results="results/multiqc/raw/multiqc_report.html",
-#         direct=directory("results/multiqc/raw")
-#     conda:
-#         "qctrim.yaml"
-#     threads: 1
-#     shell:
-#         "multiqc {input} -o {output.direct} -n {output.results}"
+rule multiqc_raw:
+    input:
+        "results/fastqc/raw"
+    output:
+        results="results/multiqc/raw/multiqc_report.html",
+        direct=directory("results/multiqc/raw")
+    conda:
+        "qctrim.yaml"
+    threads: 1
+    shell:
+        "multiqc {input} -o {output.direct} -n {output.results}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
