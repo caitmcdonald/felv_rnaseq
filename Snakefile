@@ -29,7 +29,7 @@ class Foo(object):
 
 wildcards= Foo()
 
-wildcards.sample= metadata['sample_id'].tolist()
+wildcards.sample_id= metadata['sample_id'].tolist()
 
 ### Approach 3: just list all the samples in a config file
 
