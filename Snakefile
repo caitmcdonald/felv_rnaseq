@@ -67,7 +67,7 @@ rule fastqc_raw:
 
 rule multiqc_raw:
     input:
-        "results/fastqc/raw"
+        directory("results/fastqc/raw")
     output:
         results="results/multiqc/raw/multiqc_report.html",
         direct=directory("results/multiqc/raw")
