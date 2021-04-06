@@ -33,19 +33,19 @@
 # testing:
 rule fastqc_raw:
     input:
-        "data/samples/4438_S1_L002_R1_001.fastq.gz"
+        "data/samples/{sample}.fastq.gz"
         # get_fastqc_input_fastqs
         # lambda wildcards: config["samples"][wildcards.sample]
     output:
-        "results/fastqc/raw/4438_S1_L002_R1_001.html",
-        "results/fastqc/raw/4438_S1_L002_R1_001.zip"
+        "results/fastqc/raw/{sample}.html",
+        "results/fastqc/raw/{sample}.zip"
     conda:
         "qctrim.yaml"
     log:
-        "logs/fastqc/raw/4438_S1_L002_R1_001.log"
+        "logs/fastqc/raw/{sample}.log"
     threads: 1
     shell:
-        "(fastqc 4438_S1_L002_R1_001.fastq.gz) 2> {log}"
+        "(fastqc {sample}.fastq.gz) 2> {log}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
