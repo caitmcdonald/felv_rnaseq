@@ -65,14 +65,14 @@ rule fastqc_raw:
     shell:
         "(fastqc {input}) 2> {log}"
 
-rule multiqc_raw:
-    input:
-        "results/fastqc/raw"
-    output:
-        results="results/multiqc/raw/multiqc_report.html",
-        direct=directory("results/multiqc/raw")
-    shell:
-        "multiqc {input} {output.direct}"
+# rule multiqc_raw:
+#     input:
+#         "results/fastqc/raw"
+#     output:
+#         results="results/multiqc/raw/multiqc_report.html",
+#         direct=directory("results/multiqc/raw")
+#     shell:
+#         "multiqc {input} {output.direct}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
