@@ -69,10 +69,10 @@ rule multiqc_raw:
     input:
         "results/fastqc/raw"
     output:
-        "results/multiqc/raw/multiqc_report.html",
-        directory("results/multiqc/raw/multiqc_data")
+        results="results/multiqc/raw/multiqc_report.html",
+        direct=directory("results/multiqc/raw")
     shell:
-        "multiqc {input}"
+        "multiqc {input} {output.direct}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
