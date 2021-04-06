@@ -17,9 +17,9 @@
 
 
 ### Approach 2: import metadata as pandas df, create wildcards object for input function
-# import pandas as pd
+import pandas as pd
 #
-# metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=False)
+metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=False)
 # fastq_list = metadata['fastq'].tolist() #stores column as list of attributes
 # Integrating pandas df with snakemake supposedly:
 # input:
