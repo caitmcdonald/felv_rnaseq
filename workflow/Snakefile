@@ -65,17 +65,17 @@ rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snak
     shell:
         "(fastqc {input}) 2> {log}"
 
-rule multiqc_raw: #multiqc works when conda activate qctrim.yaml, but not via snakemake
+rule multiqc_raw:
     input:
         "results/fastqc/raw"
     output:
         # report="results/multiqc/raw/multiqc_report.html",
-        direct=directory("results/multiqc/raw")
+        directory("results/multiqc/raw")
     conda:
         "envs/multiqc.yaml"
     threads: 1
     shell:
-        "multiqc {input} -o {output.direct}"
+        "multiqc {input} -o {output}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
