@@ -95,6 +95,8 @@ __HOWEVER:__ While all of these approaches work in a dry run, I can't get it to 
           ERROR: Could not find a version that satisfies the requirement multiqc==1.0.dev0 (from -r /gpfs/summit/scratch/camcd@colostate.edu/felv_rnaseq/.snakemake/conda/condaenv.1cma2cye.requirements.txt (line 1)) (from versions: 0.1, 0.2.0, 0.3.0, 0.3.1, 0.3.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.10.1)
           ERROR: No matching distribution found for multiqc==1.0.dev0 (from -r /gpfs/summit/scratch/camcd@colostate.edu/felv_rnaseq/.snakemake/conda/condaenv.1cma2cye.requirements.txt (line 1))
 
-I think it could be because multiqc is downloaded via PIP and not conda and there are known errors when doing [both.](https://www.anaconda.com/blog/using-pip-in-a-conda-environment) Maybe adding granularity and creating two separate environments for fastqc and multiqc will resolve it?
+I think it could be because multiqc is downloaded via PIP and not conda and there are known errors when doing [both.](https://www.anaconda.com/blog/using-pip-in-a-conda-environment) Maybe adding granularity and creating two separate environments for fastqc and multiqc will resolve it? Yes! That worked!
+
+However, code still broken because I can't specify an output file name for fastqc. So, it's creating the full file name, not the shortened sample_id name I've specified in the rule. Rather than specifying a bunch of output functions (not sure if this is even possible, probably not), I need to change my wildcard values to be the full file name...
 
 My second rule (`multiqc_raw`) also fails in dry runs because the input isn't found.
