@@ -4,8 +4,8 @@
 #SBATCH --time=04:00:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=cait.mcdonald@colostate.edu
-#SBATCH --output=output-%j
-#SBATCH --error=error-%j
+#SBATCH --output=logs/fastqc/raw/output-%j
+#SBATCH --error=logs/fastqc/raw/error-%j
 
 
 ## load envs
