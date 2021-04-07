@@ -70,12 +70,12 @@ rule multiqc_raw:
         "results/fastqc/raw"
     output:
         "results/multiqc/raw/multiqc_report.html",
-        directory("results/multiqc/raw")
+        direct=directory("results/multiqc/raw")
     conda:
         "envs/multiqc.yaml"
     threads: 1
     shell:
-        "multiqc {input}"
+        "multiqc {input} -o {output.direct}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
