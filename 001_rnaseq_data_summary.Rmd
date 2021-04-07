@@ -64,8 +64,8 @@ I'm trying to turn that into a Snakemake workflow.
 ## Snakemake
 One annoying thing is that Snakefile scripts are much nicer to write in Atom than Rmd. So not totally sure how I'll integrate everything? Also not sure about how to integrate Snakemake with SLURM.
 
-After going through the Snakemake [tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html), I've set up my directories and environments as suggested, and created a [Snakefile](Snakefile). One super useful utility is `tree`, which allows you to visualize directory structure. (I currently have this installed in the snakemake env.)
-I went through quite a bit of troubleshooting and was able to get first `fastqc_raw` rule to work with:
+After going through the Snakemake [tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html), I've set up my directories and environments as suggested, and created a [Snakefile](workflow/Snakefile). One super useful utility is `tree`, which allows you to visualize directory structure. (I currently have this installed in the snakemake env.)
+I went through quite a bit of troubleshooting and was able to get the first `fastqc_raw` rule to work with:
 
 1. Full file names (pointless, but a good exercise)
 1. A basic `{sample}` wildcard
@@ -76,10 +76,10 @@ I went through quite a bit of troubleshooting and was able to get first `fastqc_
 Via:
 ```{bash, eval=F}
 conda activate snakemake
-snakemake -np results/fastqc/raw/4438_R1.html
+snakemake -np results/fastqc/raw/4438_S1_L002_R1_001_fastqc.html
 ```
 
-__HOWEVER:__ While all of these approaches work in a dry run, I can't get it to work on Summit in interactive mode. Specifying a conda .yaml file in the rules seems to direct Snakemake to download and install all the appropriate dependencies (which is annoying--why won't it just activate an env if pre-existing?), but I'm getting a PIP error:
+__NOTE 1:__ If I try to run with a conda environment that includes both fastqc and multiqc, I get a PIP error:
 
           Building DAG of jobs...
           Creating conda environment workflow/envs/qctrim.yaml...
@@ -95,8 +95,21 @@ __HOWEVER:__ While all of these approaches work in a dry run, I can't get it to 
           ERROR: Could not find a version that satisfies the requirement multiqc==1.0.dev0 (from -r /gpfs/summit/scratch/camcd@colostate.edu/felv_rnaseq/.snakemake/conda/condaenv.1cma2cye.requirements.txt (line 1)) (from versions: 0.1, 0.2.0, 0.3.0, 0.3.1, 0.3.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.10.1)
           ERROR: No matching distribution found for multiqc==1.0.dev0 (from -r /gpfs/summit/scratch/camcd@colostate.edu/felv_rnaseq/.snakemake/conda/condaenv.1cma2cye.requirements.txt (line 1))
 
-I think it could be because multiqc is downloaded via PIP and not conda and there are known errors when doing [both.](https://www.anaconda.com/blog/using-pip-in-a-conda-environment) Maybe adding granularity and creating two separate environments for fastqc and multiqc will resolve it? Yes! That worked!
+This is because multiqc is downloaded via PIP and not conda and there are known errors when doing [both.](https://www.anaconda.com/blog/using-pip-in-a-conda-environment) Adding granularity and creating two separate environments for fastqc and multiqc resolves it.
 
-However, code still broken because I can't specify an output file name for fastqc. So, it's creating the full file name, not the shortened sample_id name I've specified in the rule. Rather than specifying a bunch of output functions (not sure if this is even possible, probably not), I need to change my wildcard values to be the full file name...that works!
+__NOTE 2:__ 
+I initially tried to use wildcards with truncated filenames (e.g. sample_id=4438_R1 instead of 4438_S1_L002_R1_001). While this works in the input function, I can't then propogate the shortened name because fastqc does not allow you to specify output filenames, so you can't propagate the shortened name. So, I have to use the full filename as sample_id.
 
-My second rule (`multiqc_raw`) also fails in dry runs because the input isn't found.
+My second rule (`multiqc_raw`) *looks like* it's working. I don't know for sure because I already generated all the files directly using a batch script (see below).
+
+## SLURM scheduling
+
+While I'm debugging my snakemake workflow, I just went ahead and submitted fastqc and multiqc via a bash script. I thought about doing it as a job array, but since multiqc isn't multi-threaded, I thought it made more sense to specify threads within each command, and then just request an adequate amount of memory and time instead. Because fastqc assigns 250MB per cpu, I requested 5GB (250 x 19 = 4750).
+
+I submitted the [fastqc.sh](workflow/scripts/fastqc.sh) script via:
+
+```{bash, eval=F}
+sbatch workflow/scripts/fastqc.sh
+```
+
+With the `--test-only` flag first to make sure I wasn't requesting more memory than existed. This took ~2.5 hours to run. __Could this be better optimized?__
