@@ -55,8 +55,8 @@ rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snak
         # lambda wildcards: config["samples"][wildcards.sample_id] #works
         # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute as in wildcards.sample_id= metadata.loc["4438_R1", "sample_id"], but not with a list of all sample_ids.
     output:
-        "results/fastqc/raw/{sample_id}.html",
-        "results/fastqc/raw/{sample_id}.zip"
+        "results/fastqc/raw/{sample_id}_fastqc.html",
+        "results/fastqc/raw/{sample_id}_fastqc.zip"
     conda:
         "envs/fastqc.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
     log:
