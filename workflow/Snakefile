@@ -19,7 +19,7 @@
 ### Approach 2: import metadata as pandas df, create wildcards object for input function
 import pandas as pd
 #
-metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=False)
+metadata = pd.read_table("data/metadata/felv_metadata_long.txt").set_index("sample_id", drop=False)
 # fastq_list = metadata['fastq'].tolist() #stores column as list of attributes
 # Integrating pandas df with snakemake supposedly:
 # input:
@@ -34,7 +34,7 @@ metadata = pd.read_table("felv_metadata_long.txt").set_index("sample_id", drop=F
 # wildcards.sample_id= metadata.loc["4438_R1", "sample_id"]
 
 ### Approach 3: just list all the samples in a config file
-# configfile: "config.yaml"
+# configfile: "config/config.yaml"
 
 ##########
 
@@ -58,24 +58,24 @@ rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snak
         "results/fastqc/raw/{sample_id}.html",
         "results/fastqc/raw/{sample_id}.zip"
     conda:
-        "qctrim.yaml"
+        "workflow/envs/qctrim.yaml"
     log:
         "logs/fastqc/raw/{sample_id}.log"
     threads: 1
     shell:
         "(fastqc {input}) 2> {log}"
 
-rule multiqc_raw: #multiqc works when conda activate qctrim.yaml, but not via snakemake
-    input:
-        "results/fastqc/raw"
-    output:
-        # report="results/multiqc/raw/multiqc_report.html",
-        direct=directory("results/multiqc/raw")
-    conda:
-        "qctrim.yaml"
-    threads: 1
-    shell:
-        "multiqc {input} -o {output.direct}"
+# rule multiqc_raw: #multiqc works when conda activate qctrim.yaml, but not via snakemake
+#     input:
+#         "results/fastqc/raw"
+#     output:
+#         # report="results/multiqc/raw/multiqc_report.html",
+#         direct=directory("results/multiqc/raw")
+#     conda:
+#         "workflow/envs/qctrim.yaml"
+#     threads: 1
+#     shell:
+#         "multiqc {input} -o {output.direct}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
@@ -84,31 +84,6 @@ rule multiqc_raw: #multiqc works when conda activate qctrim.yaml, but not via sn
 #         #the last output
 #         "results/multiqc/raw/multiqc_report.html",
 #         directory("results/multiqc/raw/multiqc_data")
-#
-# rule fastqc_raw:
-#     input:
-#         # "/data/{sample}.fastq.gz"
-#         # get_fastqc_input_fastqs
-#         lambda wildcards: config["samples"][wildcards.sample]
-#     output:
-#         "results/fastqc/raw/{sample}.html",
-#         "results/fastqc/raw/{sample}.zip"
-#     conda:
-#         "qctrim.yaml"
-#     log:
-#         "logs/fastqc/raw/{sample}.log"
-#     threads: 1
-#     shell:
-#         "(fastqc {input}) 2> {log}"
-#
-# rule multiqc_raw:
-#     input:
-#         "results/fastqc/raw"
-#     output:
-#         "results/multiqc/raw/multiqc_report.html",
-#         directory("results/multiqc/raw/multiqc_data")
-#     shell:
-#         "multiqc {input}"
 
 # rule cutadapt:
 #     input:

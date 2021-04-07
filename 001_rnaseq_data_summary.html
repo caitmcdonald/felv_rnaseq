@@ -1683,7 +1683,7 @@ summary {
 
 <h1 class="title toc-ignore">RNAseq data summary</h1>
 <h4 class="author">Cait McDonald</h4>
-<h4 class="date">Last Updated: 2021-03-31</h4>
+<h4 class="date">Last Updated: 2021-04-07</h4>
 
 </div>
 
@@ -1691,30 +1691,32 @@ summary {
 <ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#what-i-want-to-do">What I want to do</a></li>
+<li><a href="#snakemake">Snakemake</a></li>
 </ul>
 </div>
 
 <pre class="r"><code>library(tidyverse)
 library(here)
-# dir.create(&quot;outputs/001&quot;, recursive = TRUE, showWarnings = FALSE)
-# dir.create(&quot;intermediates/001&quot;, recursive = TRUE, showWarnings = FALSE)</code></pre>
+# dir.create(&quot;outputs/001&quot;, recursive = TRUE, showWarnings = FALSE) #no longer using this structure since I&#39;m trying to use snakemake
+# dir.create(&quot;intermediates/001&quot;, recursive = TRUE, showWarnings = FALSE)
+# dir.create(&quot;scripts&quot;, recursive = TRUE, showWarnings = FALSE)</code></pre>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>We have 39 RNAseq libraries from the following samples:</p>
-<p>Start a summit session and use opt+cmd+return to send to terminal:</p>
-<pre class="bash"><code>ls /scratch/summit/camcd@colostate.edu/felv_rnaseq/data/</code></pre>
-<p>Samples are named such as: <code>4438_S1_L002_R1_001.fastq.gz</code> in the <code>raw</code> directory. L002 and 001 are common to all files, and I assume indicate sequencing run info. I will shorten all filenames in <code>data</code> like so:</p>
+<p>We have 39 RNAseq libraries from the following samples (start a summit session and use opt+cmd+return to send to terminal):</p>
+<pre class="bash"><code>ls /scratch/summit/camcd@colostate.edu/felv_rnaseq/data/samples/</code></pre>
+<p>Samples are named such as: <code>4438_S1_L002_R1_001.fastq.gz</code> in the <code>samples</code> directory. L002 and 001 are common to all files, and I assume indicate sequencing run info. I could shorten all filenames in <code>data</code> like so:</p>
 <pre class="bash"><code>for fname in *.fastq.gz ; do mv &quot;$fname&quot; &quot;$(echo &quot;$fname&quot; | sed -r &#39;s/L002_//&#39;)&quot; ; done
 for fname in *.fastq.gz ; do mv &quot;$fname&quot; &quot;$(echo &quot;$fname&quot; | sed -r &#39;s/_001//&#39;)&quot; ; done</code></pre>
+<p>However, I think it’s better to not mess with them, especially since I can use input functions and wildcards.</p>
 </div>
 <div id="what-i-want-to-do" class="section level2">
 <h2>What I want to do</h2>
-<p>I’d like to start using Snakemake, as recommended by Eric Anderson. It seems difficult to set up???</p>
+<p>I’d like to start using Snakemake, as recommended by Eric Anderson. It seems like a steep-ish learning curve???</p>
 <p>Regardless, I want to:</p>
 <ol style="list-style-type: decimal">
 <li>run fastqc</li>
 <li>run multiqc</li>
-<li>run trimgalore (or trimmomatic?)</li>
+<li>trim</li>
 <li>re-run fastqc on trimmed libraries</li>
 <li>re-run multiqc on trimmed libraries</li>
 </ol>
@@ -1724,7 +1726,25 @@ multiqc ./fastqc_raw -o ./multiqc_raw #multiqc
 parallel trim_galore --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o ./trim_galore_out/ {=s/_R1/_R2/=} ::: *_R1.fastq.gz
 fastqc *.fastq.gz -o ./fastqc_trimmed -t 24 &gt;&amp; fastqc_trimmed.log #fastqc
 multiqc ./fastqc_trimmed -o ./multiqc_trimmed #multiqc</code></pre>
-<p>I’m trying to turn that into a smk script…see <code>qc.smk</code>. One annoying thing is that .smk scripts are much nicer to write in Atom than Rmd. So not totally sure how I’ll integrate everything? Also not sure if the .smk will work yet? And also not sure about how to integrate Snakemake with SLURM…</p>
+<p>I’m trying to turn that into a Snakemake workflow.</p>
+</div>
+<div id="snakemake" class="section level2">
+<h2>Snakemake</h2>
+<p>One annoying thing is that Snakefile scripts are much nicer to write in Atom than Rmd. So not totally sure how I’ll integrate everything? Also not sure about how to integrate Snakemake with SLURM.</p>
+<p>After going through the Snakemake <a href="https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html">tutorial</a>, I’ve set up my directories and environments as suggested, and created a <a href="Snakefile">Snakefile</a>. One super useful utility is <code>tree</code>, which allows you to visualize directory structure. (I currently have this installed in the snakemake env.) I went through quite a bit of troubleshooting and was able to get first fastqc rule to work with:</p>
+<ol style="list-style-type: decimal">
+<li>Full file names (pointless, but a good exercise)</li>
+<li>A basic <code>{sample}</code> wildcard</li>
+<li>A config file</li>
+<li>A config file + input function</li>
+<li>Importing metadata via pandas + input function</li>
+</ol>
+<p>Via:</p>
+<pre class="bash"><code>conda activate snakemake
+snakemake -np results/fastqc/raw/4438_R1.html</code></pre>
+<p><strong>HOWEVER:</strong> While all of these approaches work in a dry run, I can’t get it to work on Summit in interactive mode. Specifying a conda .yaml file in the rules seems to direct Snakemake to download and install all the appropriate dependencies (which is annoying–why won’t it just activate an env if pre-existing?), but I’m getting a PIP error:</p>
+<pre><code>      [Error message]</code></pre>
+<p>My second rule (multiqc) also fails in dry runs because the input isn’t found.</p>
 </div>
 
 

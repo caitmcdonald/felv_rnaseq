@@ -15,36 +15,37 @@ start_time <- Sys.time()
 ```
 
 
-```{r, message=FALSE}
+```{r, message=FALSE, eval=F}
 library(tidyverse)
 library(here)
-# dir.create("outputs/001", recursive = TRUE, showWarnings = FALSE)
+# dir.create("outputs/001", recursive = TRUE, showWarnings = FALSE) #no longer using this structure since I'm trying to use snakemake
 # dir.create("intermediates/001", recursive = TRUE, showWarnings = FALSE)
-dir.create("scripts", recursive = TRUE, showWarnings = FALSE)
-
+# dir.create("scripts", recursive = TRUE, showWarnings = FALSE)
 ```
 
 ## Overview
 We have 39 RNAseq libraries from the following samples (start a summit session and use opt+cmd+return to send to terminal):
 ```{bash, eval=F} 
-ls /scratch/summit/camcd@colostate.edu/felv_rnaseq/data/
+ls /scratch/summit/camcd@colostate.edu/felv_rnaseq/data/samples/
 ```
 
-Samples are named such as: `4438_S1_L002_R1_001.fastq.gz` in the `raw` directory. L002 and 001 are common to all files, and I assume indicate sequencing run info. I will shorten all filenames in `data` like so:
+Samples are named such as: `4438_S1_L002_R1_001.fastq.gz` in the `samples` directory. L002 and 001 are common to all files, and I assume indicate sequencing run info. I could shorten all filenames in `data` like so:
 
 ```{bash, eval=F}
 for fname in *.fastq.gz ; do mv "$fname" "$(echo "$fname" | sed -r 's/L002_//')" ; done
 for fname in *.fastq.gz ; do mv "$fname" "$(echo "$fname" | sed -r 's/_001//')" ; done
 ```
 
+However, I think it's better to not mess with them, especially since I can use input functions and wildcards.
+
 ## What I want to do
-I'd like to start using Snakemake, as recommended by Eric Anderson. It seems like a steepish learning curve???
+I'd like to start using Snakemake, as recommended by Eric Anderson. It seems like a steep-ish learning curve???
 
 Regardless, I want to:
 
 1. run fastqc
 1. run multiqc
-1. run trimgalore (or trimmomatic?)
+1. trim
 1. re-run fastqc on trimmed libraries
 1. re-run multiqc on trimmed libraries
 
@@ -58,5 +59,28 @@ fastqc *.fastq.gz -o ./fastqc_trimmed -t 24 >& fastqc_trimmed.log #fastqc
 multiqc ./fastqc_trimmed -o ./multiqc_trimmed #multiqc
 ```
 
-I'm trying to turn that into a smk script...see `qc.smk`. One annoying thing is that .smk scripts are much nicer to write in Atom than Rmd. So not totally sure how I'll integrate everything? Also not sure if the .smk will work yet? And also not sure about how to integrate Snakemake with SLURM...
+I'm trying to turn that into a Snakemake workflow.
 
+## Snakemake
+One annoying thing is that Snakefile scripts are much nicer to write in Atom than Rmd. So not totally sure how I'll integrate everything? Also not sure about how to integrate Snakemake with SLURM.
+
+After going through the Snakemake [tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html), I've set up my directories and environments as suggested, and created a [Snakefile](Snakefile). One super useful utility is `tree`, which allows you to visualize directory structure. (I currently have this installed in the snakemake env.)
+I went through quite a bit of troubleshooting and was able to get first `fastqc_raw` rule to work with:
+
+1. Full file names (pointless, but a good exercise)
+1. A basic `{sample}` wildcard
+1. A config file
+1. A config file + input function
+1. Importing metadata via pandas + input function
+
+Via:
+```{bash, eval=F}
+conda activate snakemake
+snakemake -np results/fastqc/raw/4438_R1.html
+```
+
+__HOWEVER:__ While all of these approaches work in a dry run, I can't get it to work on Summit in interactive mode. Specifying a conda .yaml file in the rules seems to direct Snakemake to download and install all the appropriate dependencies (which is annoying--why won't it just activate an env if pre-existing?), but I'm getting a PIP error:
+
+          [Error message]
+
+My second rule (`multiqc_raw`) also fails in dry runs because the input isn't found.
