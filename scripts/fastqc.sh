@@ -16,4 +16,4 @@ conda activate qctrim
 fastqc -t 19 data/samples/*.fastq.gz -o results/fastqc/raw
 
 ## run multiqc
-multiqc results/fastqc/raw -o results/multiqc/raw -n results/multiqc/raw/multiqc_report.html
+multiqc results/fastqc/raw -o results/multiqc/raw

@@ -69,13 +69,13 @@ rule multiqc_raw: #multiqc works when conda activate qctrim.yaml, but not via sn
     input:
         "results/fastqc/raw"
     output:
-        report="results/multiqc/raw/multiqc_report.html",
+        # report="results/multiqc/raw/multiqc_report.html",
         direct=directory("results/multiqc/raw")
     conda:
         "qctrim.yaml"
     threads: 1
     shell:
-        "multiqc {input} -o {output.direct} -n {output.report}"
+        "multiqc {input} -o {output.direct}"
 
 
 # don't totally understand this rule yet...cannot have wildcards within target rule
