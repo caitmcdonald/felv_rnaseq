@@ -61,9 +61,9 @@ rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snak
         "envs/fastqc.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
     log:
         "logs/fastqc/raw/{sample_id}.log"
-    threads: 1
+    threads: 19
     shell:
-        "(fastqc {input}) 2> {log}"
+        "(fastqc -t {threads} {input}) 2> {log}"
 
 rule multiqc_raw:
     input:
@@ -73,7 +73,6 @@ rule multiqc_raw:
         direct=directory("results/multiqc/raw")
     conda:
         "envs/multiqc.yaml"
-    threads: 1
     shell:
         "multiqc {input} -o {output.direct}"
 
