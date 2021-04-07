@@ -58,7 +58,7 @@ rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snak
         "results/fastqc/raw/{sample_id}.html",
         "results/fastqc/raw/{sample_id}.zip"
     conda:
-        "envs/qctrim.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
+        "envs/fastqc.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
     log:
         "logs/fastqc/raw/{sample_id}.log"
     threads: 1
@@ -72,7 +72,7 @@ rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snak
 #         # report="results/multiqc/raw/multiqc_report.html",
 #         direct=directory("results/multiqc/raw")
 #     conda:
-#         "envs/qctrim.yaml"
+#         "envs/multiqc.yaml"
 #     threads: 1
 #     shell:
 #         "multiqc {input} -o {output.direct}"
