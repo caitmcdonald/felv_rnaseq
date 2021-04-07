@@ -97,6 +97,6 @@ __HOWEVER:__ While all of these approaches work in a dry run, I can't get it to 
 
 I think it could be because multiqc is downloaded via PIP and not conda and there are known errors when doing [both.](https://www.anaconda.com/blog/using-pip-in-a-conda-environment) Maybe adding granularity and creating two separate environments for fastqc and multiqc will resolve it? Yes! That worked!
 
-However, code still broken because I can't specify an output file name for fastqc. So, it's creating the full file name, not the shortened sample_id name I've specified in the rule. Rather than specifying a bunch of output functions (not sure if this is even possible, probably not), I need to change my wildcard values to be the full file name...
+However, code still broken because I can't specify an output file name for fastqc. So, it's creating the full file name, not the shortened sample_id name I've specified in the rule. Rather than specifying a bunch of output functions (not sure if this is even possible, probably not), I need to change my wildcard values to be the full file name...that works!
 
 My second rule (`multiqc_raw`) also fails in dry runs because the input isn't found.
