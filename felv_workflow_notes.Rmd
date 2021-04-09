@@ -1,0 +1,45 @@
+---
+title: "FeLV snakemake workflow notes"
+author: "Cait McDonald"
+date: "Last Updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+start_time <- Sys.time()
+```
+
+#### Note: this largely follows Eric Anderson's [microhap workflow](https://github.com/eriqande/mega-simple-microhap-snakeflow).
+I'm also trying to write these notes so they can work as a Snakemake tutorial as well, for when I inevitably forget what I've done.
+
+## Organizing my data
+Input data is all stored within a `data/` directory, which includes:
+
+- `metadata.txt` detailing sample information
+- `raw/` directory with all raw seq files
+
+```{r, eval=T, message=F}
+library(here)
+library(tidyverse)
+library(knitr)
+
+metadata <- read_delim("data/felv_metadata.txt", delim="\t")
+head(metadata)
+```
+
+We can set this as our run dir in our `config.yaml` file.
+
+## Notes on organization
+
+For [reproducibility](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html), it's best to organize your directories as suggested:
+
+![](images/tree_grab.png)
+
+So, all rules are written as individual `.smk` files in a `rules` directory, and then called by the Snakefile. Note that when thinking about paths, you do *not* need to include `workflow/` because Snakemake infers it (so `envs/tool1.yaml`, not `workflow/envs/tool1.yaml`).
+
+

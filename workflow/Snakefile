@@ -19,19 +19,19 @@
 ### Approach 2: import metadata as pandas df, create wildcards object for input function
 import pandas as pd
 #
-metadata = pd.read_table("data/metadata/felv_metadata_long.txt").set_index("sample_id", drop=False)
-# fastq_list = metadata['fastq'].tolist() #stores column as list of attributes
+met_long = pd.read_table("data/metadata/felv_metadata_long.txt").set_index("sample_id", drop=False)
+# fastq_list = met_long['fastq'].tolist() #stores column as list of attributes
 # Integrating pandas df with snakemake supposedly:
 # input:
-    # lambda wildcards, output: metadata.fastq[wildcards.sample_id]
+    # lambda wildcards, output: met_long.fastq[wildcards.sample_id]
 
 # class Foo(object):
 #     pass
 #
 # wildcards= Foo()
 
-# wildcards.sample_id= metadata['sample_id'].tolist()
-# wildcards.sample_id= metadata.loc["4438_R1", "sample_id"]
+# wildcards.sample_id= met_long['sample_id'].tolist()
+# wildcards.sample_id= met_long.loc["4438_R1", "sample_id"]
 
 ### Approach 3: just list all the samples in a config file
 # configfile: "config/config.yaml"
@@ -46,11 +46,17 @@ metadata = pd.read_table("data/metadata/felv_metadata_long.txt").set_index("samp
 
 # using pandas:
 def get_input_fastqs(wildcards):
-    return "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"]
+    return "data/samples/" + met_long.loc[wildcards.sample_id, "fastq"]
 
-rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snakemake
+# don't totally understand this rule yet...cannot have wildcards within target rule
+rule all:
     input:
-        # "data/samples/{sample}.fastq.gz" #works when use full name, not key as in config
+        #the last output
+        # directory("results/multiqc/raw/multiqc_data")
+        "results/multiqc/raw/multiqc_data"
+
+rule fastqc_raw:
+    input:
         get_input_fastqs #works with both definitions!!!
         # lambda wildcards: config["samples"][wildcards.sample_id] #works
         # "data/samples/" + metadata.loc[wildcards.sample_id, "fastq"] #this works when I define a specific sample id as the attribute as in wildcards.sample_id= metadata.loc["4438_R1", "sample_id"], but not with a list of all sample_ids.
@@ -63,7 +69,7 @@ rule fastqc_raw: #fastqc works when conda activate qctrim.yaml, but not via snak
         "logs/fastqc/raw/{sample_id}.log"
     threads: 19
     shell:
-        "(fastqc -t {threads} {input}) 2> {log}"
+        "echo (fastqc -t {threads} {input}) 2> {log}"
 
 rule multiqc_raw:
     input:
@@ -74,21 +80,15 @@ rule multiqc_raw:
     conda:
         "envs/multiqc.yaml"
     shell:
-        "multiqc {input} -o {output.direct}"
+        "echo multiqc {input} -o {output.direct}"
 
+rule trimgalore:
+    input:
+        get_input_fastqs
+    output:
 
-# don't totally understand this rule yet...cannot have wildcards within target rule
-# rule all:
-#     input:
-#         #the last output
-#         "results/multiqc/raw/multiqc_report.html",
-#         directory("results/multiqc/raw/multiqc_data")
-
-# rule cutadapt:
-#     input:
-#         "/data/{sample}.fastq.gz"
-#     output:
-#     shell:
+    shell:
+        "echo trim_galore --paired --retain_unpaired --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o ./trim_galore_pe_out/ {input.f1} {input.f2}"
 #
 # rule fastqc_trim:
 #     input:

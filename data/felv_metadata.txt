@@ -1,4 +1,4 @@
-animal_id	cell_type	population	status	index	sample_id	fastq1	fastq2
+cat_id	cell_type	population	status	index	sample_id	fastq1	fastq2
 4438	PBMC	SPF	uninfected	S1	4438	4438_S1_L002_R1_001.fastq.gz	4438_S1_L002_R2_001.fastq.gz
 4460	PBMC	SPF	uninfected	S2	4460	4460_S2_L002_R1_001.fastq.gz	4460_S2_L002_R2_001.fastq.gz
 4474	PBMC	SPF	uninfected	S3	4474	4474_S3_L002_R1_001.fastq.gz	4474_S3_L002_R2_001.fastq.gz

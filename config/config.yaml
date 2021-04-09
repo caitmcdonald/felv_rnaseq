@@ -1,4 +1,10 @@
+species: Felis gattus, Puma concolor
+
+run_dir: data
+
+# within the run_dir is the samples file
 samples:
+    # change this to metadata.txt once i'm ready
     4438_S1_L002_R1_001: 4438_S1_L002_R1_001.fastq.gz
     4438_S1_L002_R2_001: 4438_S1_L002_R2_001.fastq.gz
     4460_S2_L002_R1_001: 4460_S2_L002_R1_001.fastq.gz
