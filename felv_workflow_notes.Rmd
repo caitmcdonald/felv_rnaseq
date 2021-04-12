@@ -14,8 +14,12 @@ knitr::opts_chunk$set(echo = TRUE)
 start_time <- Sys.time()
 ```
 
+-----
+
 #### Note: this largely follows Eric Anderson's [microhap workflow](https://github.com/eriqande/mega-simple-microhap-snakeflow).
 I'm also trying to write these notes so they can work as a Snakemake tutorial as well, for when I inevitably forget what I've done.
+
+-----
 
 ## Organizing my data
 Input data is all stored within a `data/` directory, which includes:
@@ -34,6 +38,8 @@ head(metadata)
 
 We can set this as our run dir in our `config.yaml` file.
 
+<br>
+
 ## Notes on organization
 
 For [reproducibility](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html), it's best to organize your directories as suggested:
@@ -41,5 +47,24 @@ For [reproducibility](https://snakemake.readthedocs.io/en/stable/snakefiles/depl
 ![](images/tree_grab.png)
 
 So, all rules are written as individual `.smk` files in a `rules` directory, and then called by the Snakefile. Note that when thinking about paths, you do *not* need to include `workflow/` because Snakemake infers it (so `envs/tool1.yaml`, not `workflow/envs/tool1.yaml`).
+
+<br>
+
+## Designing the workflow
+To avoid rewriting rules for future projects, I want to write rules that are as modular as possible. My workflow for this project is:
+
+1. QC
+1. Read trimming
+1. QC
+1. STAR (align and quant)
+
+So, my goal will be to write just one QC rule such that I can call it for raw and trimmed reads. I also want to make sure the read trimming rule could work equally well for RNAseq or ddRAD data. From here, I could easily add in rules for other programs (e.g. Trinity, bowtie2, RSEM, salmon).
+
+<br>
+
+## Writing and testing rules
+To make the QC rule modular for both raw and trimmed reads, I need to figure out some sort of wildcard for file paths and naming, in addition to the standard wildcard for sample. Is this possible? Seems like it should be?
+
+Hmmm and we can add even more modularity by putting function definitions that might be called by multiple rules into a `common.smk` file...
 
 

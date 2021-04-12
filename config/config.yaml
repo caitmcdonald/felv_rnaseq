@@ -1,6 +1,6 @@
 species: Felis gattus, Puma concolor
 
-run_dir: data
+run_dir: ./data
 
 # within the run_dir is the samples file
 samples:
