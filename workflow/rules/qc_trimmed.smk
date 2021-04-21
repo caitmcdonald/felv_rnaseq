@@ -1,6 +1,6 @@
 ## Run fastqc on trimmed files, then run multiqc on fastqc output
 import glob, sys
-trimmed = glob.glob('data/trimmed/*fastq.gz')
+trimmed = glob.glob('data/trimmed/*val*')
 
 filename = []
 for f in trimmed:
