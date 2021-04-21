@@ -9,17 +9,17 @@ for f in trimmed:
 
 rule fastqc_trimmed:
     input:
-        trimmed
+        "data/trimmed/{filename}.fastq.gz"
     output:
         "results/fastqc/trimmed/{filename}_fastqc.html",
         "results/fastqc/trimmed/{filename}_fastqc.zip"
     conda:
-        "envs/fastqc.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
+        "../envs/fastqc.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
     log:
         "logs/fastqc/trimmed/{filename}.log"
-    threads: 19
+    threads: 20
     shell:
-        "echo (fastqc -t {threads} {input}) 2> {log}"
+        "(fastqc -t {threads} {input}) 2> {log}"
 
 rule multiqc_trimmed:
     input:
@@ -28,6 +28,6 @@ rule multiqc_trimmed:
         "results/multiqc/trimmed/multiqc_report.html",
         direct=directory("results/multiqc/trimmed")
     conda:
-        "envs/multiqc.yaml"
+        "../envs/multiqc.yaml"
     shell:
-        "echo multiqc {input} -o {output.direct}"
+        "multiqc {input} -o {output.direct}"
