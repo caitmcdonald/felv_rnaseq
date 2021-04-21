@@ -5,12 +5,12 @@ rule trimgalore_pe:
         fq2=get_raw_fq2
     output:
         # direct=directory("trimmed"),
-        "data/trimmed/{sample_id}_R1_001_val_1.fastq.gz",
-        "data/trimmed/{sample_id}_R2_001_val_2.fastq.gz",
         "data/trimmed/{sample_id}_R1_001.fastq.gz_trimming_report.txt",
         "data/trimmed/{sample_id}_R2_001.fastq.gz_trimming_report.txt",
-        "data/trimmed/{sample_id}_R1_001_unpaired_1.fastq.gz",
-        "data/trimmed/{sample_id}_R2_001_unpaired_2.fastq.gz"
+        "data/trimmed/{sample_id}_R1_001_unpaired_1.fq.gz",
+        "data/trimmed/{sample_id}_R2_001_unpaired_2.fq.gz",
+        "data/trimmed/{sample_id}_R1_001_val_1.fq.gz",
+        "data/trimmed/{sample_id}_R2_001_val_2.fq.gz"
     conda:
         "../envs/trim_galore.yaml"
     log:
