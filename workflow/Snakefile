@@ -2,9 +2,9 @@
 include: "rules/common.smk"
 
 ## Target:
-# rule all:
-#     input:
-#         "results/multiqc/trimmed/multiqc_report.html"
+rule all:
+    input:
+        "results/multiqc/trimmed/multiqc_report.html"
 
 ## Rules to include:
 
