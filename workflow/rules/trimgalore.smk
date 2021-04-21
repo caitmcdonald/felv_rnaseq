@@ -17,4 +17,4 @@ rule trimgalore_pe:
         "logs/trimgalore/{sample_id}.log"
     threads: 20
     shell:
-        "echo trim_galore --cores 20 --paired --retain_unpaired --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o /data/trimmed/ {input.fq1} {input.fq2}"
+        "echo trim_galore --cores 20 --paired --retain_unpaired --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o data/trimmed/ {input.fq1} {input.fq2}"
