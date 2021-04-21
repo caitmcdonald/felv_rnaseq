@@ -1,0 +1,7 @@
+name: star_quant
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - star=2.7.8a=h9ee0642_1
+prefix: /projects/camcd@colostate.edu/miniconda3/envs/star_quant

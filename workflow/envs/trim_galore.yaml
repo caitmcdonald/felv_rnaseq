@@ -1,0 +1,39 @@
+name: trim_galore
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - bz2file=0.98=py37h06a4308_1
+  - ca-certificates=2021.1.19=h06a4308_1
+  - certifi=2020.12.5=py37h06a4308_0
+  - cutadapt=1.18=py37h14c3975_1
+  - fastqc=0.11.9=hdfd78af_1
+  - font-ttf-dejavu-sans-mono=2.37=h6964260_0
+  - fontconfig=2.13.1=h6c09931_0
+  - freetype=2.10.4=h5ab3b9f_0
+  - icu=58.2=he6710b0_3
+  - ld_impl_linux-64=2.33.1=h53a641e_7
+  - libffi=3.3=he6710b0_2
+  - libgcc-ng=9.1.0=hdf63c60_0
+  - libpng=1.6.37=hbc83047_0
+  - libstdcxx-ng=9.1.0=hdf63c60_0
+  - libuuid=1.0.3=h1bed415_2
+  - libxml2=2.9.10=hb55368b_3
+  - ncurses=6.2=he6710b0_1
+  - openjdk=8.0.152=h7b6447c_3
+  - openssl=1.1.1k=h27cfd23_0
+  - perl=5.26.2=h14c3975_0
+  - pigz=2.4=h84994c4_0
+  - pip=21.0.1=py37h06a4308_0
+  - python=3.7.10=hdb3f193_0
+  - readline=8.1=h27cfd23_0
+  - setuptools=52.0.0=py37h06a4308_0
+  - sqlite=3.35.4=hdfb4753_0
+  - tk=8.6.10=hbc83047_0
+  - trim-galore=0.6.6=hdfd78af_1
+  - wheel=0.36.2=pyhd3eb1b0_0
+  - xopen=0.7.3=py_0
+  - xz=5.2.5=h7b6447c_0
+  - zlib=1.2.11=h7b6447c_3
+prefix: /projects/camcd@colostate.edu/miniconda3/envs/trim_galore
