@@ -26,8 +26,7 @@ rule multiqc_trimmed:
         "results/fastqc/trimmed"
     output:
         "results/multiqc/trimmed/multiqc_report.html",
-        direct=directory("results/multiqc/trimmed")
     conda:
         "../envs/multiqc.yaml"
     shell:
-        "multiqc {input} -o {output.direct}"
+        "multiqc {input} -o results/multiqc/trimmed"

@@ -7,5 +7,7 @@ samples: felv_metadata.txt
 
 results:
     fastqc_raw: "results/fastqc/raw/"
+    multiqc_raw: "results/multiqc/raw"
     trimgalore: "data/trimmed/"
     fastqc_trimmed: "results/fastqc/trimmed/"
+    multiqc_trimmed: "results/multiqc/trimmed/"
