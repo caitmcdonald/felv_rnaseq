@@ -4,3 +4,6 @@ run_dir: ./data
 
 # within the run_dir is the samples file
 samples: felv_metadata.txt
+
+results:
+    trimgalore: "data/trimmed/"
