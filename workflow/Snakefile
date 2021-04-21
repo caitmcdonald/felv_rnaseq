@@ -9,6 +9,6 @@ include: "rules/common.smk"
 ## Rules to include:
 
 include: "rules/qc_raw.smk"
-# include: "rules/trimgalore"
+include: "rules/trimgalore.smk"
 # include: "rules/qc_trimmed"
 # include: "rules/[STAR rule]"
