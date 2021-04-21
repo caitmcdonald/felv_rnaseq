@@ -4,7 +4,7 @@ rule trimgalore_pe:
         fq1=get_raw_fq1,
         fq2=get_raw_fq2
     output:
-        direct=directory("trimmed")
+        direct=directory("trimmed"),
         "data/trimmed/{sample_id}_R1_001.val_1.fastq.gz",
         "data/trimmed/{sample_id}_R2_001.val_2.fastq.gz",
         "data/trimmed/{sample_id}_R1_001.1.fastq.gz_trimming_report.txt",
