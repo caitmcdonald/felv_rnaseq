@@ -1683,7 +1683,7 @@ summary {
 
 <h1 class="title toc-ignore">FeLV snakemake workflow notes</h1>
 <h4 class="author">Cait McDonald</h4>
-<h4 class="date">Last Updated: 2021-04-12</h4>
+<h4 class="date">Last Updated: 2021-04-21</h4>
 
 </div>
 
@@ -1717,7 +1717,7 @@ metadata &lt;- read_delim(&quot;data/felv_metadata.txt&quot;, delim=&quot;\t&quo
 head(metadata)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["cat_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cell_type"],"name":[2],"type":["chr"],"align":["left"]},{"label":["population"],"name":[3],"type":["chr"],"align":["left"]},{"label":["status"],"name":[4],"type":["chr"],"align":["left"]},{"label":["index"],"name":[5],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[6],"type":["chr"],"align":["left"]},{"label":["fastq1"],"name":[7],"type":["chr"],"align":["left"]},{"label":["fastq2"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"4438","2":"PBMC","3":"SPF","4":"uninfected","5":"S1","6":"4438","7":"4438_S1_L002_R1_001.fastq.gz","8":"4438_S1_L002_R2_001.fastq.gz"},{"1":"4460","2":"PBMC","3":"SPF","4":"uninfected","5":"S2","6":"4460","7":"4460_S2_L002_R1_001.fastq.gz","8":"4460_S2_L002_R2_001.fastq.gz"},{"1":"4474","2":"PBMC","3":"SPF","4":"uninfected","5":"S3","6":"4474","7":"4474_S3_L002_R1_001.fastq.gz","8":"4474_S3_L002_R2_001.fastq.gz"},{"1":"4501","2":"PBMC","3":"SPF","4":"uninfected","5":"S4","6":"4501","7":"4501_S4_L002_R1_001.fastq.gz","8":"4501_S4_L002_R2_001.fastq.gz"},{"1":"4510","2":"PBMC","3":"SPF","4":"uninfected","5":"S5","6":"4510","7":"4510_S5_L002_R1_001.fastq.gz","8":"4510_S5_L002_R2_001.fastq.gz"},{"1":"4520","2":"PBMC","3":"SPF","4":"uninfected","5":"S6","6":"4520","7":"4520_S6_L002_R1_001.fastq.gz","8":"4520_S6_L002_R2_001.fastq.gz"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["cat_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cell_type"],"name":[2],"type":["chr"],"align":["left"]},{"label":["population"],"name":[3],"type":["chr"],"align":["left"]},{"label":["status"],"name":[4],"type":["chr"],"align":["left"]},{"label":["index"],"name":[5],"type":["chr"],"align":["left"]},{"label":["sample_id"],"name":[6],"type":["chr"],"align":["left"]},{"label":["fastq1"],"name":[7],"type":["chr"],"align":["left"]},{"label":["fastq2"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"4438","2":"PBMC","3":"SPF","4":"uninfected","5":"S1","6":"4438_S1_L002","7":"4438_S1_L002_R1_001.fastq.gz","8":"4438_S1_L002_R2_001.fastq.gz"},{"1":"4460","2":"PBMC","3":"SPF","4":"uninfected","5":"S2","6":"4460_S2_L002","7":"4460_S2_L002_R1_001.fastq.gz","8":"4460_S2_L002_R2_001.fastq.gz"},{"1":"4474","2":"PBMC","3":"SPF","4":"uninfected","5":"S3","6":"4474_S3_L002","7":"4474_S3_L002_R1_001.fastq.gz","8":"4474_S3_L002_R2_001.fastq.gz"},{"1":"4501","2":"PBMC","3":"SPF","4":"uninfected","5":"S4","6":"4501_S4_L002","7":"4501_S4_L002_R1_001.fastq.gz","8":"4501_S4_L002_R2_001.fastq.gz"},{"1":"4510","2":"PBMC","3":"SPF","4":"uninfected","5":"S5","6":"4510_S5_L002","7":"4510_S5_L002_R1_001.fastq.gz","8":"4510_S5_L002_R2_001.fastq.gz"},{"1":"4520","2":"PBMC","3":"SPF","4":"uninfected","5":"S6","6":"4520_S6_L002","7":"4520_S6_L002_R1_001.fastq.gz","8":"4520_S6_L002_R2_001.fastq.gz"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>We can set this as our run dir in our <code>config.yaml</code> file.</p>
@@ -1745,9 +1745,8 @@ head(metadata)</code></pre>
 <div id="writing-and-testing-rules" class="section level2">
 <h2>Writing and testing rules</h2>
 <p>To make the QC rule modular for both raw and trimmed reads, I need to figure out some sort of wildcard for file paths and naming, in addition to the standard wildcard for sample.</p>
-<p>Hmmm and we can add even more modularity by putting function definitions that might be called by multiple rules into a <code>common.smk</code> file…for example, within <code>common.smk</code> I could have:</p>
-<pre class="bash"><code>
-def get_raw_fastqs(wildcards):
+<p>Hmmm and we can add even more modularity by putting function definitions that might be called by multiple rules into a <code>common.smk</code> file…for example, within that common file I could have:</p>
+<pre class="bash"><code>def get_raw_fastqs(wildcards):
     &quot;&quot;&quot;Get path to raw fastq files&quot;&quot;&quot;
     return r&quot;{run_dir}/raw/{fq}&quot;.format(run_dir=wildcards.run_dir, fq=wildcards.fq)
 

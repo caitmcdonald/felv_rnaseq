@@ -98,7 +98,7 @@ __NOTE 1:__ If I try to run with a conda environment that includes both fastqc a
 This is because multiqc is downloaded via PIP and not conda and there are known errors when doing [both.](https://www.anaconda.com/blog/using-pip-in-a-conda-environment) Adding granularity and creating two separate environments for fastqc and multiqc resolves it.
 
 __NOTE 2:__ 
-I initially tried to use wildcards with truncated filenames (e.g. sample_id=4438_R1 instead of 4438_S1_L002_R1_001). While this works in the input function, I can't then propogate the shortened name because fastqc does not allow you to specify output filenames, so you can't propagate the shortened name. So, I have to use the full filename as sample_id.
+I initially tried to use wildcards with truncated filenames (e.g. sample_id=4438_R1 instead of 4438_S1_L002_R1_001). While this works in the input function, I can't then propagate the shortened name because fastqc does not allow you to specify output filenames, so you can't propagate the shortened name. So, I have to use the full filename as sample_id.
 
 My second rule (`multiqc_raw`) *looks like* it's working. I don't know for sure because I already generated all the files directly using a batch script (see below).
 

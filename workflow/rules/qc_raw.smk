@@ -9,15 +9,15 @@ for f in raw:
 
 rule fastqc_raw:
     input:
-        get_raw_fastqs
+        "data/raw/{filename}.fastq.gz"
     output:
         "results/fastqc/raw/{filename}_fastqc.html",
         "results/fastqc/raw/{filename}_fastqc.zip"
     conda:
-        "envs/fastqc.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
+        "../envs/fastqc.yaml" #note: don't list workflow parent dir as snakemake recognizes it automatically
     log:
         "logs/fastqc/raw/{filename}.log"
-    threads: 19
+    threads: 20
     shell:
         "echo (fastqc -t {threads} {input}) 2> {log}"
 
@@ -28,6 +28,6 @@ rule multiqc_raw:
         "results/multiqc/raw/multiqc_report.html",
         direct=directory("results/multiqc/raw")
     conda:
-        "envs/multiqc.yaml"
+        "../envs/multiqc.yaml"
     shell:
         "echo multiqc {input} -o {output.direct}"

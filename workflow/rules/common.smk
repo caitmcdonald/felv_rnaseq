@@ -12,15 +12,6 @@ samples = pd.read_table(metadata).set_index("sample_id", drop=False)
 
 ## functions for input wildcards
 
-# get all fastqs, regardless of read1 or read2, for fastqc+multiqc
-# def get_raw_fastqs(wildcards):
-#     """Get path to raw fastq files"""
-#     return r"{run_dir}/raw/{fq}".format(run_dir=wildcards.run_dir, fq=wildcards.fq)
-
-# def get_trimmed_fastqs(wildcards):
-#     """Get path to trimmed fastq files"""
-#     return r"{run_dir}/trimmed/{fq}".format(run_dir=wildcards.run_dir, fq=wildcards.fq)
-
 # get read1 fastq files
 def get_raw_fq1(wildcards):
     """Get path to R1 fastq files"""
