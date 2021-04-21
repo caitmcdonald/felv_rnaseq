@@ -19,7 +19,7 @@ rule fastqc_raw:
         "logs/fastqc/raw/{filename}.log"
     threads: 20
     shell:
-        "echo (fastqc -t {threads} {input}) 2> {log}"
+        "(fastqc -t {threads} {input}) 2> {log}"
 
 rule multiqc_raw:
     input:
@@ -30,4 +30,4 @@ rule multiqc_raw:
     conda:
         "../envs/multiqc.yaml"
     shell:
-        "echo multiqc {input} -o {output.direct}"
+        "multiqc {input} -o {output.direct}"
