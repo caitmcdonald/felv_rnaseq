@@ -12,7 +12,7 @@ rule trimgalore_pe:
         "data/trimmed/{sample_id}_R1_001.unpaired_1.fastq.gz",
         "data/trimmed/{sample_id}_R2_001.unpaired_2.fastq.gz"
     conda:
-        "../envs/trimgalore.yaml"
+        "../envs/trim_galore.yaml"
     log:
         "logs/trimgalore/{sample_id}.log"
     threads: 19
