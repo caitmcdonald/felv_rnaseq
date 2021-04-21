@@ -9,7 +9,7 @@ for f in raw:
 
 rule fastqc_raw:
     input:
-        "{filename}.fastq.gz"
+        raw
     output:
         "results/fastqc/raw/{filename}_fastqc.html",
         "results/fastqc/raw/{filename}_fastqc.zip"
