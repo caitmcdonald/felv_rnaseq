@@ -7,7 +7,7 @@ run_dir: ./data
 # trim_dir: ./data/trimmed
 
 # within the run_dir is the samples file
-samples: ./data/felv_metadata.txt
+samples: felv_metadata.txt
     # 4438_S1_L002_R1_001: 4438_S1_L002_R1_001.fastq.gz
     # 4438_S1_L002_R2_001: 4438_S1_L002_R2_001.fastq.gz
     # 4460_S2_L002_R1_001: 4460_S2_L002_R1_001.fastq.gz
