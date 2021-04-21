@@ -6,4 +6,6 @@ run_dir: data
 samples: felv_metadata.txt
 
 results:
+    fastqc_raw: "results/fastqc/raw/"
     trimgalore: "data/trimmed/"
+    fastqc_trimmed: "results/fastqc/trimmed/"
