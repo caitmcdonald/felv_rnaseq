@@ -2,13 +2,13 @@
 include: "rules/common.smk"
 
 ## Target:
-rule all:
-    input:
-        #the last output
+# rule all:
+#     input:
+#         "results/multiqc/raw/multiqc_report.html"
 
 ## Rules to include:
 
-include: "rules/qc_raw"
-include: "rules/trimgalore"
-include: "rules/qc_trimmed"
-include: "rules/[STAR rule]"
+include: "rules/qc_raw.smk"
+# include: "rules/trimgalore"
+# include: "rules/qc_trimmed"
+# include: "rules/[STAR rule]"
