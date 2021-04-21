@@ -63,8 +63,21 @@ So, my goal will be to write just one QC rule such that I can call it for raw an
 <br>
 
 ## Writing and testing rules
-To make the QC rule modular for both raw and trimmed reads, I need to figure out some sort of wildcard for file paths and naming, in addition to the standard wildcard for sample. Is this possible? Seems like it should be?
+To make the QC rule modular for both raw and trimmed reads, I need to figure out some sort of wildcard for file paths and naming, in addition to the standard wildcard for sample.
 
-Hmmm and we can add even more modularity by putting function definitions that might be called by multiple rules into a `common.smk` file...
+Hmmm and we can add even more modularity by putting function definitions that might be called by multiple rules into a `common.smk` file...for example, within that common file I could have:
+
+```{bash, eval=F}
+def get_raw_fastqs(wildcards):
+    """Get path to raw fastq files"""
+    return r"{run_dir}/raw/{fq}".format(run_dir=wildcards.run_dir, fq=wildcards.fq)
+
+def get_trimmed_fastqs(wildcards):
+    """Get path to trimmed fastq files"""
+    return r"{run_dir}/trimmed/{fq}".format(run_dir=wildcards.run_dir, fq=wildcards.fq)
+
+```
+
+
 
 

@@ -1721,6 +1721,7 @@ head(metadata)</code></pre>
   </script>
 </div>
 <p>We can set this as our run dir in our <code>config.yaml</code> file.</p>
+<p><br></p>
 </div>
 <div id="notes-on-organization" class="section level2">
 <h2>Notes on organization</h2>
@@ -1743,6 +1744,17 @@ head(metadata)</code></pre>
 </div>
 <div id="writing-and-testing-rules" class="section level2">
 <h2>Writing and testing rules</h2>
+<p>To make the QC rule modular for both raw and trimmed reads, I need to figure out some sort of wildcard for file paths and naming, in addition to the standard wildcard for sample.</p>
+<p>Hmmm and we can add even more modularity by putting function definitions that might be called by multiple rules into a <code>common.smk</code> file…for example, within <code>common.smk</code> I could have:</p>
+<pre class="bash"><code>
+def get_raw_fastqs(wildcards):
+    &quot;&quot;&quot;Get path to raw fastq files&quot;&quot;&quot;
+    return r&quot;{run_dir}/raw/{fq}&quot;.format(run_dir=wildcards.run_dir, fq=wildcards.fq)
+
+def get_trimmed_fastqs(wildcards):
+    &quot;&quot;&quot;Get path to trimmed fastq files&quot;&quot;&quot;
+    return r&quot;{run_dir}/trimmed/{fq}&quot;.format(run_dir=wildcards.run_dir, fq=wildcards.fq)
+</code></pre>
 </div>
 
 
