@@ -9,7 +9,7 @@ for f in trimmed:
 
 rule fastqc_trimmed:
     input:
-        "data/trimmed/{filename}.fq.gz"
+        "{filename}.fq.gz"
     output:
         "results/fastqc/trimmed/{filename}_fastqc.html",
         "results/fastqc/trimmed/{filename}_fastqc.zip"
