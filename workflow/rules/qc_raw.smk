@@ -10,7 +10,7 @@ for f in raw:
 fastqc_raw_out = []
 for raw in filename:
     new_filename = 'results/fastqc/raw/' + raw.split('/')[2] + '_fastqc.html'
-    fastqc_trim_out.append(new_filename)
+    fastqc_raw_out.append(new_filename)
 
 rule fastqc_raw:
     input:
