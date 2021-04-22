@@ -3,13 +3,13 @@ import glob, sys
 trimmed = glob.glob('data/trimmed/*val*')
 
 filename = []
-for f in trimmed:
-  no_ext = f.split('.')[0]
+for file in trimmed:
+  no_ext = file.split('.')[0]
   filename.append(no_ext)
 
 fastqc_trim_out = []
-for filename in trimmed:
-  new_filename = 'results/fastqc/trimmed/' + filename.split('.')[0] + '_fastqc.html'
+for trim in filename:
+  new_filename = 'results/fastqc/trimmed/' + trim.split('/')[2] + '_fastqc.html'
   fastqc_trim_out.append(new_filename)
 
 rule fastqc_trimmed:
