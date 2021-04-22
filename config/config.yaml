@@ -3,7 +3,7 @@ species: Felis gattus, Puma concolor
 run_dir: data
 
 # within the run_dir is the samples file
-samples: felv_metadata.txt
+samples: felv_metadata.tsv
 
 results:
     fastqc_raw: "results/fastqc/raw/"
