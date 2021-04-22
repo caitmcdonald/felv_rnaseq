@@ -7,6 +7,11 @@ for f in trimmed:
   no_ext = f.split('.')[0]
   filename.append(no_ext)
 
+fastqc_trim_out = []
+for filename in trimmed:
+  new_filename = filename.split('.')[0] + '_fastqc.html'
+  fastqc_trim_out.append(new_filename)
+
 rule fastqc_trimmed:
     input:
         trimmed
@@ -23,7 +28,8 @@ rule fastqc_trimmed:
 
 rule multiqc_trimmed:
     input:
-        "results/fastqc/trimmed"
+        # "results/fastqc/trimmed"
+        fastqc_trim_out
     output:
         "results/multiqc/trimmed/multiqc_report.html",
     conda:
