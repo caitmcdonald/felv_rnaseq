@@ -1,6 +1,6 @@
 ## Run fastqc on raw files, then run multiqc on fastqc output
 import glob, sys
-raw = glob.glob('data/raw/*fastq.gz')
+raw = glob.glob('raw/*fastq.gz')
 
 filename = []
 for f in raw:
