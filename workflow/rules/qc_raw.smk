@@ -4,8 +4,13 @@ raw = glob.glob('data/raw/*fastq.gz')
 
 filename = []
 for f in raw:
-  no_ext = f.split('.')[0]
-  filename.append(no_ext)
+    no_ext = f.split('.')[0]
+    filename.append(no_ext)
+
+fastqc_raw_out = []
+for raw in filename:
+    new_filename = 'results/fastqc/raw/' + raw.split('/')[2] + '_fastqc.html'
+    fastqc_trim_out.append(new_filename)
 
 rule fastqc_raw:
     input:
@@ -23,7 +28,8 @@ rule fastqc_raw:
 
 rule multiqc_raw:
     input:
-        "results/fastqc/raw"
+        # "results/fastqc/raw" #for some reason can't use dir as input???
+        fastqc_raw_out
     output:
         "results/multiqc/raw/multiqc_report.html",
         direct=directory("results/multiqc/raw")
