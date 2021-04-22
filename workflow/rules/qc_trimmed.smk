@@ -9,7 +9,7 @@ for f in trimmed:
 
 fastqc_trim_out = []
 for filename in trimmed:
-  new_filename = filename.split('.')[0] + '_fastqc.html'
+  new_filename = 'results/fastqc/trimmed/' + filename.split('.')[0] + '_fastqc.html'
   fastqc_trim_out.append(new_filename)
 
 rule fastqc_trimmed:
