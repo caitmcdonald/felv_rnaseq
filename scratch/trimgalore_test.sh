@@ -10,4 +10,8 @@
 source ~/.bashrc
 conda activate trim_galore
 
-trim_galore --cores 20 --paired --retain_unpaired --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o data/trimmed data/raw/4438_S1_L002_R1_001.fastq.gz data/raw/4438_S1_L002_R2_001.fastq.gz
+cd data/raw/
+
+for i in $(ls *R1_001.fastq.gz | sed 's/\R1_001.fastq.gz//'); do
+    trim_galore --cores 20 --paired --retain_unpaired --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o ../trimmed ./$i\R1_001.fastq.gz ./$i\R2_001.fastq.gz;
+done
