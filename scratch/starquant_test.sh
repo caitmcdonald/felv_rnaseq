@@ -19,15 +19,15 @@ conda activate star_quant
 
 export WORK=/scratch/summit/camcd@colostate.edu/felv_rnaseq
 cd $WORK
-mkdir resources/genome_star
+# mkdir resources/genome_star
 export GENOMEDIR=resources/genome_star
-
-## Build genome index
-STAR --runThreadN 22 --runMode genomeGenerate --genomeDir $GENOMEDIR --genomeFastaFiles resources/genome_ncbi/GCF_000181335.3_Felis_catus_9.0_genomic.fna --sjdbGTFfile resources/genome_ncbi/GCF_000181335.3_Felis_catus_9.0_genomic.gtf --sjdbOverhang 149
+#
+# ## Build genome index
+# STAR --runThreadN 22 --runMode genomeGenerate --genomeDir $GENOMEDIR --genomeFastaFiles resources/genome_ncbi/GCF_000181335.3_Felis_catus_9.0_genomic.fna --sjdbGTFfile resources/genome_ncbi/GCF_000181335.3_Felis_catus_9.0_genomic.gtf --sjdbOverhang 149
 
 ## set up some relative paths
 export DATA=data/trimmed
-mkdir results/star_quant
+# mkdir results/star_quant
 export OUTDIR=results/star_quant
 
 ## Load genome index
