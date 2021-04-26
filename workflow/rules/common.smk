@@ -21,7 +21,8 @@ def get_raw_fq1(wildcards):
 # get read2 fastq files
 def get_raw_fq2(wildcards):
     """Get path to R2 fastq files"""
-    return r"raw/{fq}".format(fq=samples.loc[wildcards.sample_id, "fastq2"])
+    return r"raw/{fq}".format(
+    fq=samples.loc[wildcards.sample_id, "fastq2"])
 
 # get trimmed read1 fastq files
 def get_trimmed_fq1(wildcards):

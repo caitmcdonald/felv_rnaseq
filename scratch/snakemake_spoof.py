@@ -7,8 +7,7 @@ class Foo(object):
 
 # make a variable, wildcards, which is an object of that class
 wildcards = Foo()
-# wildcards.library = '3480_ATCACG_S83_L008'
-wildcards.sample_id = '4438_S1_L002'
+wildcards.sample_id = 'S01'
 
 ### test function definitions ###
 from snakemake.io import load_configfile
@@ -26,6 +25,17 @@ samples = pd.read_table(metadata).set_index("sample_id", drop=False)
 ## test definitions
 def get_raw_fq1(wildcards):
     """Get path to R1 fastq files"""
-    return r"{run_dir}/raw/{fq}".format(run_dir=config["run_dir"], fq=samples.loc[wildcards.sample_id, "fastq1"])
+    return r"raw/{fq}".format(fq=samples.loc[wildcards.sample_id, "fastq1"])
 
 get_raw_fq1(wildcards)
+
+def get_fq_all(wildcards):
+    import glob, sys
+    trimmed = glob.glob('data/trimmed/*val*')
+
+    filename = []
+    for f in trimmed:
+        no_ext = f.split('.')[0]
+        filename.append(no_ext)
+
+    return filename
