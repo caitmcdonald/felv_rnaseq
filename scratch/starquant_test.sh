@@ -35,8 +35,8 @@ STAR --genomeLoad LoadAndExit --genomeDir $GENOMEDIR
 
 ## Loop over all read files
 cd $DATA
-
-for i in $(ls *R1_001_trimmed.fq.gz | sed 's/\R1_001_trimmed.fq.gz//'); do echo STAR --runThreadN 22 --genomeDir $GENOMEDIR/GCF_000181335.3_Felis_catus_9.0_genomic --genomeLoad LoadAndKeep --readFilesIn ${i}R1_001_trimmed.fq.gz ${i}R2_001_trimmed.fq.gz --readFilesCommand zcat --outFilterMismatchNmax 3 --outSAMtype BAM SortedByCoordinate --outFilterType BySJout --outFilterIntronMotifs RemoveNoncanonicalUnannotated --quantMode GeneCounts --outFileNamePrefix $OUTDIR/$i;
+_R1_001_val_1.fq.gz
+for i in $(ls *R1_001_val_1.fq.gz | sed 's/\R1_001_val_1.fq.gz//'); do echo STAR --runThreadN 22 --genomeDir $GENOMEDIR/GCF_000181335.3_Felis_catus_9.0_genomic --genomeLoad LoadAndKeep --readFilesIn ${i}R1_001_val_1.fq.gz ${i}R2_001_val_2.fq.gz --readFilesCommand zcat --outFilterMismatchNmax 3 --outSAMtype BAM SortedByCoordinate --outFilterType BySJout --outFilterIntronMotifs RemoveNoncanonicalUnannotated --quantMode GeneCounts --outFileNamePrefix $OUTDIR/$i;
 done
 
 ## Remove genome index from memory
