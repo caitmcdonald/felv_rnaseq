@@ -27,8 +27,8 @@ export GENOMEDIR=$WORK/resources/genome_star
 
 ## set up some relative paths
 export DATA=data/trimmed
-# mkdir results/star_quant
-export OUTDIR=results/star_quant
+mkdir $WORK/results/star_quant_bam
+export OUTDIR=$WORK/results/star_quant_bam
 
 ## Load genome index
 STAR --genomeLoad LoadAndExit --genomeDir $GENOMEDIR
@@ -36,8 +36,10 @@ STAR --genomeLoad LoadAndExit --genomeDir $GENOMEDIR
 ## Loop over all read files
 cd $DATA
 
-for i in $(ls *R1_001_val_1.fq.gz | sed 's/\R1_001_val_1.fq.gz//'); do STAR --runThreadN 22 --genomeDir $GENOMEDIR --readFilesIn ${i}R1_001_val_1.fq.gz ${i}R2_001_val_2.fq.gz --readFilesCommand zcat --outFilterMismatchNmax 3 --outSAMtype BAM SortedByCoordinate --outFilterType BySJout --outFilterIntronMotifs RemoveNoncanonicalUnannotated --quantMode GeneCounts --outFileNamePrefix $OUTDIR/$i;
+for i in $(ls *R1_001_val_1.fq.gz | sed 's/\R1_001_val_1.fq.gz//'); do STAR --runThreadN 22 --genomeDir $GENOMEDIR --readFilesIn ${i}R1_001_val_1.fq.gz ${i}R2_001_val_2.fq.gz --readFilesCommand zcat --outFilterMismatchNmax 3 --outSAMtype BAM SortedByCoordinate --outFilterType BySJout --outFilterIntronMotifs RemoveNoncanonicalUnannotated --quantMode TranscriptomeSAM GeneCounts --outFileNamePrefix $OUTDIR/$i;
 done
+
+# --quantMode TranscriptomeSAM GeneCounts will return aligned bams and gene counts
 
 ## Remove genome index from memory
 STAR --genomeLoad Remove --genomeDir $GENOMEDIR
