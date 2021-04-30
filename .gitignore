@@ -6,6 +6,5 @@ data/samples/
 logs/
 results/fastqc/
 .snakemake/
-results/star_quant_bam/*.bam
-results/star_quant_bam/*.out
-results/star_quant_bam/*SJ.out.tab
+results/star_quant_bam/
+readcounts.txt
