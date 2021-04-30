@@ -3,8 +3,12 @@
 .RData
 .Ruserdata
 data/samples/
+data/trimmed/
+data/raw/
+resources/
 logs/
 results/fastqc/
 .snakemake/
 results/star_quant_bam/
+results/star_quant/
 readcounts.txt
