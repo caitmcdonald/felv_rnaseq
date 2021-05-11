@@ -32,7 +32,7 @@ library(here)
 library(tidyverse)
 library(knitr)
 
-metadata <- read_delim("data/felv_metadata.txt", delim="\t")
+metadata <- read_delim("data/felv_metadata.tsv", delim="\t")
 head(metadata)
 ```
 
@@ -58,14 +58,14 @@ To avoid rewriting rules for future projects, I want to write rules that are as 
 1. QC
 1. STAR (align and quant)
 
-So, my goal will be to write just one QC rule such that I can call it for raw and trimmed reads. I also want to make sure the read trimming rule could work equally well for RNAseq or ddRAD data. From here, I could easily add in rules for other programs (e.g. Trinity, bowtie2, RSEM, salmon).
+From here, I could easily add in rules for other programs (e.g. Trinity, bowtie2, RSEM, salmon).
 
 <br>
 
 ## Writing and testing rules
-To make the QC rule modular for both raw and trimmed reads, I need to figure out some sort of wildcard for file paths and naming, in addition to the standard wildcard for sample.
+To make the rules modular, I need to figure out some sort of wildcard for file paths and naming, in addition to the standard wildcard for sample.
 
-Hmmm and we can add even more modularity by putting function definitions that might be called by multiple rules into a `common.smk` file...for example, within that common file I could have:
+We can add even more modularity by putting function definitions that might be called by multiple rules into a `common.smk` file...for example, within that common file I could have:
 
 ```{bash, eval=F}
 def get_raw_fastqs(wildcards):
@@ -78,6 +78,43 @@ def get_trimmed_fastqs(wildcards):
 
 ```
 
+## Snakemake: QC rules
+One annoying thing is that Snakefile scripts are much nicer to write in Atom than Rmd. So not totally sure how I'll integrate everything? Also not sure about how to integrate Snakemake with SLURM.
 
+After going through the Snakemake [tutorial](https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html), I've set up my directories and environments as suggested, and created a [Snakefile](workflow/Snakefile). One super useful utility is `tree`, which allows you to visualize directory structure. (I currently have this installed in the snakemake conda env). I went through quite a bit of troubleshooting and was able to get the first `fastqc_raw` rule to work with:
 
+1. Full file names (pointless, but a good exercise)
+1. A basic `{sample}` wildcard
+1. A config file
+1. A config file + input function
+1. Importing metadata via pandas + input function
+
+Via:
+```{bash, eval=F}
+conda activate snakemake
+snakemake -np results/fastqc/raw/4438_S1_L002_R1_001_fastqc.html
+```
+
+__NOTE 1:__ If I try to run with a conda environment that includes both fastqc and multiqc, I get a PIP error:
+
+          Building DAG of jobs...
+          Creating conda environment workflow/envs/qctrim.yaml...
+          Downloading and installing remote packages.
+          CreateCondaEnvironmentException:
+          Could not create conda environment from             /gpfs/summit/scratch/camcd@colostate.edu/felv_rnaseq/workflow/envs/qctrim.yaml:
+          Preparing transaction: ...working... done
+          Verifying transaction: ...working... done
+          Executing transaction: ...working... done
+          Installing pip dependencies: ...working... failed
+          Pip subprocess error:
+          DEPRECATION: Python 2.7 will reach the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 won't be maintained after that date. A future version of pip will drop support for Python 2.7. More details about Python 2 support in pip, can be found at https://pip.pypa.io/en/latest/development/release-process/#python-2-support
+          ERROR: Could not find a version that satisfies the requirement multiqc==1.0.dev0 (from -r /gpfs/summit/scratch/camcd@colostate.edu/felv_rnaseq/.snakemake/conda/condaenv.1cma2cye.requirements.txt (line 1)) (from versions: 0.1, 0.2.0, 0.3.0, 0.3.1, 0.3.2, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.10.1)
+          ERROR: No matching distribution found for multiqc==1.0.dev0 (from -r /gpfs/summit/scratch/camcd@colostate.edu/felv_rnaseq/.snakemake/conda/condaenv.1cma2cye.requirements.txt (line 1))
+
+This is because multiqc is downloaded via PIP and not conda and there are known errors when doing [both.](https://www.anaconda.com/blog/using-pip-in-a-conda-environment) Adding granularity and creating two separate environments for fastqc and multiqc resolves it.
+
+__NOTE 2:__ 
+I initially tried to use wildcards with truncated filenames (e.g. sample_id=4438_R1 instead of 4438_S1_L002_R1_001). While this works in the input function, I can't then propagate the shortened name because fastqc does not allow you to specify output filenames, so you can't propagate the shortened name. So, I have to use the full filename as sample_id.
+
+My second rule (`multiqc_raw`) *looks like* it's working. I don't know for sure because I already generated all the files directly using a batch script (see below).
 
