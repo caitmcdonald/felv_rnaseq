@@ -57,13 +57,29 @@ sbatch workflow/scripts/fastqc.sh
 
 With the `--test-only` flag first to make sure I wasn't requesting more memory than existed. This took ~2.5 hours to run. This could definitely be better optimized as a job array...
 
-### Trimegalore
+### Trimgalore
 
 Trimgalore worked great as a loop with standard quality and read length flags. See [trimgalore_test.sh](scratch/trimgalore_test.sh).
 
+### OrthoFinder (RBH analysis)
+
+If we want to compare gene expression between our cat and panther samples, we need to restrict analysis to only orthologs. There are a number of ways to do this. Classically, we do it with a reciprocal best hit `blastp` run (blast all cat samples to puma genome, blast all puma samples to cat genome, retain only genes with hits both ways as presumptive orthologs). There are now many programs that will do this for you that are much faster than a local blast alignment. One is OrthoFinder, which uses `diamond`.
+
+OrthoFinder requires protein fasta files for each proteome of interest, then performs an all-vs-all blast with `diamond`. An added bonus is that it also uses gene trees to infer orthology, which is more rigorous than some other approaches.
+
+I'm following this [tutorial](https://davidemms.github.io/orthofinder_tutorials/running-an-example-orthofinder-analysis.html).
+
+1. download the proteomes (see config file) and unzip
+1. get only primary transcript using OrthoFinder python script: ```for f in *.faa ; do python primary_transcript.py $f ; done```
+1. run OrthoFinder: ```orthofinder -f primary_transcripts/```
+
+OrthoFinder creates a results dir called ‘OrthoFinder’ inside the input proteome directory. For the RBH, we basically only care about Orthologues output.
+
+Once this is finished, I'll re-run STAR on the puma samples only, filter the respective read counts matrices to only orthologs, and combine for DGE analysis.
+
 ### STAR (`quantMode`)
 
-Ran STAR in `quantMode`, which generates gene-level quantifcation files. [starquant_test.sh](scratch/starquant_test.sh).
+Ran STAR in `quantMode`, which generates gene-level quantification files. [starquant_test.sh](scratch/starquant_test.sh).
 
 I then just used bash one-liners to compile the __unstranded__ output into a counts matrix:
 

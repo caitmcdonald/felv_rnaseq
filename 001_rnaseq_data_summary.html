@@ -1681,7 +1681,7 @@ summary {
 
 
 <h1 class="title toc-ignore">RNAseq data summary</h1>
-<h4 class="date">Last Updated: 2021-05-06</h4>
+<h4 class="date">Last Updated: 2021-05-18</h4>
 
 </div>
 
@@ -1690,7 +1690,8 @@ summary {
 <li><a href="#overview">Overview</a></li>
 <li><a href="#pipeline">Pipeline</a><ul>
 <li><a href="#fastqc-multiqc">fastqc + multiqc</a></li>
-<li><a href="#trimegalore">Trimegalore</a></li>
+<li><a href="#trimgalore">Trimgalore</a></li>
+<li><a href="#orthofinder-rbh-analysis">OrthoFinder (RBH analysis)</a></li>
 <li><a href="#star-quantmode">STAR (<code>quantMode</code>)</a></li>
 <li><a href="#edger">edgeR</a></li>
 </ul></li>
@@ -1724,13 +1725,25 @@ for fname in *.fastq.gz ; do mv &quot;$fname&quot; &quot;$(echo &quot;$fname&quo
 <pre class="bash"><code>sbatch workflow/scripts/fastqc.sh</code></pre>
 <p>With the <code>--test-only</code> flag first to make sure I wasn’t requesting more memory than existed. This took ~2.5 hours to run. This could definitely be better optimized as a job array…</p>
 </div>
-<div id="trimegalore" class="section level3">
-<h3>Trimegalore</h3>
+<div id="trimgalore" class="section level3">
+<h3>Trimgalore</h3>
 <p>Trimgalore worked great as a loop with standard quality and read length flags. See <a href="scratch/trimgalore_test.sh">trimgalore_test.sh</a>.</p>
+</div>
+<div id="orthofinder-rbh-analysis" class="section level3">
+<h3>OrthoFinder (RBH analysis)</h3>
+<p>If we want to compare gene expression between our cat and panther samples, we need to restrict analysis to only orthologs. There are a number of ways to do this. Classically, we do it with a reciprocal best hit <code>blastp</code> run (blast all cat samples to puma genome, blast all puma samples to cat genome, retain only genes with hits both ways as presumptive orthologs). There are now many programs that will do this for you that are much faster than a local blast alignment. One is OrthoFinder, which uses <code>diamond</code>.</p>
+<p>OrthoFinder requires protein fasta files for each proteome of interest, then performs an all-vs-all blast with <code>diamond</code>. An added bonus is that it also uses gene trees to infer orthology, which is more rigorous than some other approaches.</p>
+<p>I’m following this <a href="https://davidemms.github.io/orthofinder_tutorials/running-an-example-orthofinder-analysis.html">tutorial</a>.</p>
+<ol style="list-style-type: decimal">
+<li>download the proteomes (see config file) and unzip</li>
+<li>get only primary transcript using OrthoFinder python script: <code>for f in *.faa ; do python primary_transcript.py $f ; done</code></li>
+<li>run OrthoFinder: <code>orthofinder -f primary_transcripts/</code></li>
+</ol>
+<p>OrthoFinder creates a results dir called ‘OrthoFinder’ inside the input proteome directory. For the RBH, we basically only care about Orthologues output.</p>
 </div>
 <div id="star-quantmode" class="section level3">
 <h3>STAR (<code>quantMode</code>)</h3>
-<p>Ran STAR in <code>quantMode</code>, which generates gene-level quantifcation files. <a href="scratch/starquant_test.sh">starquant_test.sh</a>.</p>
+<p>Ran STAR in <code>quantMode</code>, which generates gene-level quantification files. <a href="scratch/starquant_test.sh">starquant_test.sh</a>.</p>
 <p>I then just used bash one-liners to compile the <strong>unstranded</strong> output into a counts matrix:</p>
 <pre class="bash"><code>ls *ReadsPerGene.out.tab | paste -s - &gt; samplenames.txt
 
