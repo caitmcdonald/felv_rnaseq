@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --mem 74GB
-#SBATCH --time=12:00:00
+#SBATCH --time=23:00:00
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=cait.mcdonald@colostate.edu
 #SBATCH --output=output-%j
