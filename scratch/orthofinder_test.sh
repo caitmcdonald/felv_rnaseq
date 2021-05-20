@@ -18,4 +18,4 @@ cd /scratch/summit/camcd@colostate.edu/felv_rnaseq/resources/proteomes/
 # gunzip *.gz
 # for f in *.faa ; do python primary_transcript.py $f ; done
 
-orthofinder -f primary_transcripts/ #default 16 threads
+orthofinder -S diamond -f primary_transcripts/ #default 16 threads
