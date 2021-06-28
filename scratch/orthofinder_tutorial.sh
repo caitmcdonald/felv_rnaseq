@@ -20,4 +20,4 @@ cd /scratch/summit/camcd@colostate.edu/felv_rnaseq/resources/orthofinder_tutoria
 
 # for f in *fa ; do python primary_transcript.py $f ; done
 
-orthofinder -f primary_transcripts/
+orthofinder -S diamond -f primary_transcripts/ #default 16 threads
