@@ -5,7 +5,10 @@
 data/samples/
 data/trimmed/
 data/raw/
-resources/
+resources/ncbi
+resources/genome_star
+resources/orthofinder_tutorial
+resources/proteomes/primary_transcript*
 logs/
 results/fastqc/
 .snakemake/
