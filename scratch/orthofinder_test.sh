@@ -3,7 +3,7 @@
 #SBATCH --mem 92GB
 #SBATCH --time=23:00:00
 #SBATCH --mail-type=FAIL
-#SBATCH --mail-user=cait.mcdonald@colostate.edu
+#SBATCH --mail-user=coby.mcdonald@colostate.edu
 #SBATCH --output=output-%j
 #SBATCH --error=error-%j
 
