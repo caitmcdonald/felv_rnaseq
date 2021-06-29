@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --mem 74GB
+#SBATCH --mem 92GB
 #SBATCH --time=23:00:00
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=cait.mcdonald@colostate.edu
@@ -18,4 +18,5 @@ cd /scratch/summit/camcd@colostate.edu/felv_rnaseq/resources/proteomes/
 # gunzip *.gz
 # for f in *.faa ; do python primary_transcript.py $f ; done
 
-orthofinder -S diamond -f primary_transcripts/ #default 16 threads
+# orthofinder -S diamond -f primary_transcripts/ #default 16 threads
+orthofinder -t 20 -f primary_transcripts/ #default 16 threads
