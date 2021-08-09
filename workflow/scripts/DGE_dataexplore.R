@@ -24,9 +24,10 @@ library(pheatmap)
 
 #### 0. Get data ####
 ## counts
-dat <- read_delim("readcountsmatrix.txt", delim = "\t") %>% select(-DC2Pool, -DC3Pool)
-mapping_dat <- dat[c(1:4, 31498),]
+dat <- read_delim("readcountsmatrix.txt", delim = "\t") %>% select(-DC2Pool, -DC3Pool) #all counts, not just orthologs
+# mapping_dat <- dat[c(1:4, 31498),]
 counts <- dat[-c(1:4, 31498),]
+# counts <- counts_ortho_only #cat-puma ortholog dataset
 
 ## metadata
 meta <- read_tsv("data/felv_metadata.tsv") %>% filter(id_inf != c("DC2Pool", "DC3Pool")) %>% filter(id_inf != "DC1PLUS")
@@ -42,11 +43,11 @@ dat.full <- DGEList(counts=counts[,2:16], group=cell_inf, genes = counts[,1])
 # dat.full$samples$group
 
 ## Filter
-keep_counts<-rowSums(cpm(counts[,2:16])>1) >= 0.25*ncol(dat) #filter >1 cpm in >= 1/2 of samples
+keep_counts<-rowSums(cpm(counts[,2:16])>1) >= 0.25*ncol(dat) #filter >1 cpm in >= 1/4 of samples
 
 dat.filt<-dat.full[which(keep_counts==T), , keep.lib.sizes=FALSE]
-# dim(dat.full)
-# dim(dat.filt)
+dim(dat.full)
+dim(dat.filt)
 
 dat.norm<-calcNormFactors(dat.filt)
 dat.norm$samples #normalization factors and library size
@@ -75,7 +76,8 @@ ann_colors1 = list(
 
 ## Generate pheatmap
 # pdf(file="plots/sample_correlation.pdf", width=9,height=7)
-pheat_samplecor <- pheatmap(cor(dat.logCPM),
+# pdf(file="plots/sample_correlation_orthologs.pdf", width=9,height=7)
+pheatmap(cor(dat.logCPM),
                             annotation_col=annotation_col1,
                             annotation_names_col=F,
                             annotation_colors=ann_colors1,
@@ -115,6 +117,7 @@ pca
 # pca + annotate("text", label=meta_mischief$population, x=Mischief$PC1, y=Mischief$PC2, size=3)
 pca + annotate("text", label=meta_mischief$population, x=(-105), y=258, size=4)
 # ggsave(file="plots/pca_all.eps")
+# ggsave(file="plots/pca_all_orthologs.eps")
 
 
 ### 5. Subset counts and metadata dataframes by cell type and infection status ####

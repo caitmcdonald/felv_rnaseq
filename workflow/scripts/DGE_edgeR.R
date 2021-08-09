@@ -30,10 +30,16 @@ library(here)
 
 ##counts and metadata
 dat <- read_delim("results/edgeR/counts_all.txt", delim="\t")
+# dat <- read_delim("results/orthofinder/genecounts_orthologs.txt", delim="\t")
+
 metadat <- read_delim("results/edgeR/meta_all.txt", delim="\t")
 
+# Puma vs cat fibroblasts
+# counts <- dat %>% select(!contains(c("44", "45")))
+# meta <- metadat %>% filter(cell_type=="fibroblast") 
+
 #remove puma samples
-# counts <- dat %>% select(!contains("Mischief")) 
+# counts <- dat %>% select(!contains("Mischief"))
 # meta <- metadat %>% filter(cat_id!="Mischief")
 
 #uninfected/baseline only: fibroblasts vs. PMBCs
@@ -41,29 +47,47 @@ metadat <- read_delim("results/edgeR/meta_all.txt", delim="\t")
 # meta <- metadat %>% filter(cat_id!="Mischief") %>% filter(status=="uninfected")
 
 #uninfected vs infected fibroblasts
-counts <- dat %>% select(!contains(c("Mischief", "44", "45")))
-meta <- metadat %>% filter(cat_id!="Mischief") %>% filter(cell_type=="fibroblast")
+# counts <- dat %>% select(!contains(c("Mischief", "44", "45")))
+# meta <- metadat %>% filter(cat_id!="Mischief") %>% filter(cell_type=="fibroblast")
 
-# group <- meta$cell_type
-group <- meta$status
+#uninfected fibroblasts only
+# counts <- dat %>% select(!contains(c("Mischief", "44", "45", "PLUS")))
+# meta <- metadat %>% filter(cat_id!="Mischief") %>% filter(cell_type=="fibroblast") %>% filter(status=="uninfected")
+
+#PMBCs only
+counts <- dat %>% select(!contains(c("Mischief", "DC", "X")))
+meta <- metadat %>% filter(cell_type=="PBMC")
+
+# all data
+# counts <- dat
+# meta <- metadat
+
+# group <- meta$population
+group <- meta$cell_type
+# group <- meta$status
+# group <- meta$pmbcset1
+# group <- meta$pmbcset2
+# group <- meta$pmbcset3
+
 
 #### 1. Create DGElist, filter, and calcNormFactors ####
 dat <- DGEList(counts=counts[,-(1)], group=group, genes=counts[,1])
+# dat$samples
 
 #head(dat$samples$group)
-keep_counts<-rowSums(cpm(counts[,-(1:5)])>1) >= 0.25 * ncol(dat) #filter >1 cpm in >= 1/4 of samples
+keep_counts<-rowSums(cpm(counts[,-(1)])>1) >= 0.25 * ncol(dat) #filter >1 cpm in >= 1/4 of samples
 dat.filt<-dat[which(keep_counts==T), , keep.lib.sizes=FALSE]
 dim(dat.filt)
 dat.norm<-calcNormFactors(dat.filt)
-
+dat.norm$samples
 
 #### 2. Log-transform, and write tables for downstream analyses ####
 #log-transform, all counts
-dat.logCPM <- cpm(dat.norm, log=TRUE, prior.count = 1, normalized.lib.sizes = TRUE) 
+dat.logCPM <- cpm(dat.norm, log=TRUE, prior.count = 1, normalized.lib.sizes = TRUE)
 
 # write table for downstream (e.g. WGCNA)
-# dat.logCPM.tbl <- cbind(dat.filt$genes, dat.logCPM)
-# write_delim(dat.logCPM.tbl, "bp05_edgeR/counts_liv_filt0.66_log.txt", delim="\t") 
+dat.logCPM.tbl <- cbind(dat.filt$genes, dat.logCPM)
+# write_delim(dat.logCPM.tbl, "results/edgeR/counts_pmbcs_filt25_log.txt", delim="\t")
 
 
 #### 3. Generate PCA ####
@@ -72,21 +96,21 @@ dat.logCPM <- cpm(dat.norm, log=TRUE, prior.count = 1, normalized.lib.sizes = TR
 
 
 # PCA:
-pca<-prcomp(t(dat.logCPM))
-s<-summary(pca)
-s$importance
-scores<-as.data.frame(pca$x)
-# PCA by Treatment
-pca <- ggplot(data=scores, aes(x=PC1, y=PC2, group=group)) + 
-  geom_point(aes(color=group)) +
-  scale_color_manual(values=c("#00b6bd", "lightgrey")) +
-  # scale_color_manual(values=c("#008080", "#ef6079")) +
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
-  theme(panel.background = element_blank(), panel.grid = element_blank()) +
-  xlab ("PC1 (84.8%)") +
-  ylab ("PC2 (4.9%)") +
-  guides(colour = guide_legend(override.aes = list(size=2), title="FeLV status")) 
-pca + ggrepel::geom_text_repel(aes(label=meta$cat_id))
+# pca<-prcomp(t(dat.logCPM))
+# s<-summary(pca)
+# s$importance
+# scores<-as.data.frame(pca$x)
+# # PCA by Treatment
+# pca <- ggplot(data=scores, aes(x=PC1, y=PC2, group=group)) + 
+#   geom_point(aes(color=group)) +
+#   scale_color_manual(values=c("#00b6bd", "lightgrey")) +
+#   # scale_color_manual(values=c("#008080", "#ef6079")) +
+#   theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+#   theme(panel.background = element_blank(), panel.grid = element_blank()) +
+#   xlab ("PC1 (70.7%)") +
+#   ylab ("PC2 (21.1%)") +
+#   guides(colour = guide_legend(override.aes = list(size=2), title="FeLV status")) 
+# pca + ggrepel::geom_text_repel(aes(label=meta$cat_id))
 # ggsave(file="plots/pca_felv_status.jpg")
 
 #### 4. Design model, estimate dispersion, fit model ####
@@ -95,6 +119,8 @@ design.mat <- model.matrix(~ 0 + dat.norm$samples$group)
 
 colnames(design.mat) <- levels(dat.norm$samples$group)
 design.mat
+
+dat.norm$samples$group
 
 #estimate dispersion
 d1 <- estimateGLMCommonDisp(dat.norm, design.mat, verbose = TRUE)
@@ -113,8 +139,12 @@ fit.glm <- glmFit(d1, design.mat)
 
 #### 5. Set up contrasts ####
 my.contrasts <- makeContrasts(
-  inf_uninf = uninfected - infected,
-  # celltype = PBMC - fibroblast,
+  # inf_uninf = uninfected - infected,
+  celltype = PBMC - fibroblast,
+  # population = outbred - puma,
+  # ltr_present1 = present1 - absent1,
+  # ltr_present2 = present2 - absent2,
+  # ltr_present3 = present3 - absent3,
   levels=design.mat
 )
 
@@ -122,9 +152,36 @@ my.contrasts <- makeContrasts(
 #### 6. Run LR/QLF tests on all contrasts ####
 
 ## Individually:
-test <- glmLRT(fit.glm, contrast=my.contrasts[,"inf_uninf"])
+# test <- glmLRT(fit.glm, contrast=my.contrasts[,"population"])
+test <- glmLRT(fit.glm, contrast=my.contrasts[,"celltype"])
+# test <- glmLRT(fit.glm, contrast=my.contrasts[,"inf_uninf"])
+# test <- glmLRT(fit.glm, contrast=my.contrasts[,"ltr_present1"])
+# test <- glmLRT(fit.glm, contrast=my.contrasts[,"ltr_present2"])
+# test <- glmLRT(fit.glm, contrast=my.contrasts[,"ltr_present3"])
+
+
+#**this is where I subset to only genes of interest NOT up at the top**
+
+# Let's try here first...
+
+# pmbc_ltr <- read_delim("data/LTR_pmbc1_genids.txt", delim="\t") %>% distinct()
+# pmbc_ltr <- read_delim("data/LTR_pmbc2_genids.txt", delim="\t") %>% distinct()
+# pmbc_ltr <- read_delim("data/LTR_pmbc3_genids.txt", delim="\t") %>% distinct()
+over10_ltr <- read_delim("data/LTR_over10_genids.txt", delim="\t") %>% distinct()
+
+
 topDE <- topTags(test, adjust.method="BH", n=NULL)
+topDE_sig <- topDE[topDE$table$FDR<0.05,]
+# topDE_sig$table
 summary(decideTests(test, p.value = 0.05))
+
+compare <- topDE_sig$table
+final <- left_join(over10_ltr, compare, by=c("gene_id"="genes")) %>% filter(!is.na(logFC))
+
+#**or is it here?** 
+  
+
+
 
 ## as loop:
 contrast_list <- as.list(colnames(my.contrasts))
