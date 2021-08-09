@@ -17,3 +17,5 @@ for i in $(ls *R1_001.fastq.gz | sed 's/\R1_001.fastq.gz//'); do
 done
 
 # runtime: 2.5 hrs
+
+# okay so what this script is doing: for a directory that has PE fastq.gz files named <whatever-the-name-is.R1_001.fastq.gz> and <whatever-the-name-is.R2_001.fastq.gz>, loop over each of those filenames and run trim_galore on each sample pair. the stuff at the top is all if you want to run it using SLURM, so if you don't you can just run it straight as a bash one-liner for-loop with nohup from whatever your directory of interest is. i don't remember, but i think you may need to mkdir the <trimmed> output directory before running trimgalore. i used all of the --length, -q, --stringency, and -e settings at default values.
