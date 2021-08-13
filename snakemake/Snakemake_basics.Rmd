@@ -1,0 +1,36 @@
+---
+title: "Snakemake muddling"
+author: "Cait McDonald"
+date: "Last Updated: `r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+start_time <- Sys.time()
+```
+
+# Overview
+Snakemake is a workflow management system that is python-based and functions to make analytical pipelines scalable and reproducible. It uses an approach based on GNU Make wherein steps of the workflow are defined by "rules" that dictate how to create output files from specified input files. Snakemake automatically determines dependencies between rules and then constructs a directed acyclic graph (DAG) of jobs that can be run in parallel.
+
+Great things about Snakemake:
+
+- User-friendly: Python-based, so easy to read
+- Generalizable: you can use wildcards for writing general rules
+- Scalable: can easily run on cluster or single core
+- Reproducible: Conda integration allows you to define the software stack used throughout the workflow easily
+- Efficient: only runs rules if newer versions of input files exist (i.e. it's harder to overwrite accidentally, and conversely if you update something earlier in the pipeline, Snakemake will automatically re-run all subsequent rules)
+- Open-source: there are lots of wrappers to make invoking popular programs (e.g. samtools) even easier
+
+# Questions
+
+1. Best practices for integration with job scheduling?
+1. How exactly to use wrappers?
+
+          It looks like I should write a slurm script to then invoke the snakefile?
+
+
