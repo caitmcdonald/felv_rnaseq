@@ -9,8 +9,6 @@
 # 2. Generate a logCPM counts matrix
 # 3. Use logCPM counts matrix to generate sample correlation pheatmap
 # 4. Use logCPM counts matrix to generate PCAs to test for batch effects and outliers
-# 5. Subset counts and metadata dfs by tissue
-# 6. Write tissue-specific, raw counts and metadata files
 
 # Preconditions: raw gene-level counts matrix (e.g. from STAR quantMode), metadata file with sample names that correspond to sample names in counts matrix
 
@@ -23,35 +21,29 @@ library(pheatmap)
 
 
 #### 0. Get data ####
-## counts
-dat <- read_delim("readcountsmatrix.txt", delim = "\t") %>% select(-DC2Pool, -DC3Pool) #all counts, not just orthologs
-# mapping_dat <- dat[c(1:4, 31498),]
-counts <- dat[-c(1:4, 31498),]
-# counts <- counts_ortho_only #cat-puma ortholog dataset
+## counts: either full counts dataset, or restricted to only cat-puma orthologs
+dat <- read_delim("results/star_quant_bam/readcountsmatrix.txt", delim = "\t") %>% select(-DC2Pool, -DC3Pool)
+counts <- dat %>% slice(-c(1:4, 31498)) #all counts, not just orthologs; remove sample totals rows
+# counts <- read_delim("results/orthofinder/genecounts_orthologs.txt", delim = "\t") #all counts, not just orthologs; remove sample totals rows
 
 ## metadata
-meta <- read_tsv("data/felv_metadata.tsv") %>% filter(id_inf != c("DC2Pool", "DC3Pool")) %>% filter(id_inf != "DC1PLUS")
-Cell_type=meta$cell_type
-Infection_status=meta$status
-Population=meta$population
-cell_inf=paste(meta$cell_type, meta$status, sep="_")
+meta <- read_tsv("data/felv_metadata.tsv") %>% filter(id_inf != c("DC2Pool", "DC3Pool"))
 
 
 #### 1. Create DGElist, filter by CPM, and calcNormFactors ####
 ## Create DGEList
-dat.full <- DGEList(counts=counts[,2:16], group=cell_inf, genes = counts[,1])
-# dat.full$samples$group
+dat.full <- DGEList(counts=counts[,2:17], group=cell_inf, genes = counts[,1])
+# dat.full$samples
 
 ## Filter
-keep_counts<-rowSums(cpm(counts[,2:16])>1) >= 0.25*ncol(dat) #filter >1 cpm in >= 1/4 of samples
-
+keep_counts<-rowSums(cpm(counts[,2:17])>1) >= 0.25*ncol(dat) #filter >1 cpm in >= 1/4 of samples
 dat.filt<-dat.full[which(keep_counts==T), , keep.lib.sizes=FALSE]
 dim(dat.full)
 dim(dat.filt)
 
 dat.norm<-calcNormFactors(dat.filt)
-dat.norm$samples #normalization factors and library size
-# plotMDS(dat.norm)
+# dat.norm$samples #normalization factors and library size
+plotMDS(dat.norm)
 
 
 #### 2. Generate moderated, logCPM counts matrix for sample correlation and PCA ####
@@ -60,12 +52,17 @@ dat.logCPM <- cpm(dat.norm, log=TRUE, prior.count = 1, normalized.lib.sizes = TR
 
 #### 3. Generate sample correlation matrix and pheatmap ####
 ## annotate columns by tissue, treatment, and time
+Cell_type=meta$cell_type
+Infection_status=meta$status
+Population=meta$population
+cell_inf=paste(meta$cell_type, meta$status, sep="_")
+
 annotation_col1 <- data.frame(
   Cell_type,
   Infection_status,
   Population
 )
-rownames(annotation_col1) <- colnames(dat[,c(2:16)])
+rownames(annotation_col1) <- colnames(dat[,c(2:17)])
 
 ann_colors1 = list(
   Cell_type =c(fibroblast="#008080",PBMC="#ef6079"),
@@ -100,8 +97,7 @@ s<-summary(counts.pca)
 s$importance
 scores<-as.data.frame(counts.pca$x)
 
-Mischief <- scores[12,]
-meta_mischief <- meta[12,]
+meta_mischief <- meta[13,] #extract puma sample to label pca
 
 ## By cell type:
 pca <- ggplot(data=scores, aes(x=PC1, y=PC2, group=Cell_type)) + 
@@ -110,55 +106,10 @@ pca <- ggplot(data=scores, aes(x=PC1, y=PC2, group=Cell_type)) +
   scale_size_manual(values=c(3,3)) +
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1)) +
   theme(panel.background = element_blank(), panel.grid = element_blank()) +
-  xlab ("PC1 (69.9%)") +
-  ylab ("PC2 (21.2%)") +
+  xlab ("PC1 (71.9%)") +
+  ylab ("PC2 (19.8%)") +
   guides(colour = guide_legend(override.aes = list(size=3)))
 pca
-# pca + annotate("text", label=meta_mischief$population, x=Mischief$PC1, y=Mischief$PC2, size=3)
-pca + annotate("text", label=meta_mischief$population, x=(-105), y=258, size=4)
+pca + annotate("text", label=meta_mischief$population, x=(-85), y=246, size=4)
 # ggsave(file="plots/pca_all.eps")
 # ggsave(file="plots/pca_all_orthologs.eps")
-
-
-### 5. Subset counts and metadata dataframes by cell type and infection status ####
-## Subset metadata df
-
-## No pooled samples
-meta_nopool <- meta
-
-## fibroblasts only
-meta_fibro <- meta[meta$cell_type=="fibroblast",]
-
-## PMBCs only
-meta_pmbc <- meta[meta$cell_type=="PMBC",]
-
-## uninfected only
-meta_uninf <- meta[meta$status=="uninfected",]
-
-## Subset counts df using dplyr
-## fibroblasts
-counts_genes <- counts[,1]
-counts_f <- counts[,c(8:16)]
-counts_fibro <- cbind(counts_genes, counts_f)
-
-## PMBCs
-counts_pmbc <- counts[,c(1:7)]
-
-## uninfected
-counts_uninf <- counts[,c(1:9,11,13,15)]
-
-
-#### 6. Write tissue-specific, outlier-removed raw counts and metadata files ####
-## Metadata
-# write.table(meta,"results/edgeR/meta_all.txt", sep="\t", quote=F, row.names=F)
-# write.table(meta_fibro,"results/edgeR/meta_fibro.txt", sep="\t", quote=F, row.names=F)
-# write.table(meta_pmbc,"results/edgeR/meta_pmbc.txt", sep="\t", quote=F, row.names=F)
-# write.table(meta_uninf,"results/edgeR/meta_uninf.txt", sep="\t", quote=F, row.names=F)
-
-## Raw gene counts
-# write.table(counts_fibro,"results/edgeR/counts_fibro.txt", sep="\t", quote=F, row.names=F)
-# write.table(counts_pmbc,"results/edgeR/counts_pmbc.txt", sep="\t", quote=F, row.names=F)
-# write.table(counts_uninf,"results/edgeR/counts_uninf.txt", sep="\t", quote=F, row.names=F)
-
-# Full table, all tissues
-# write.table(counts, "results/edgeR/counts_all.txt", sep="\t", quote=F, row.names = F)
