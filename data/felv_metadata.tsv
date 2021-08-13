@@ -1,19 +1,19 @@
-cat_id	id_inf	cell_type	population	status	index	sample_id	no_ext	fastq1	fastq2	num_LTR
-4438	4438	PBMC	SPF	uninfected	S1	S01	4438_S1_L002	4438_S1_L002_R1_001.fastq.gz	4438_S1_L002_R2_001.fastq.gz	174
-4460	4460	PBMC	SPF	uninfected	S2	S02	4460_S2_L002	4460_S2_L002_R1_001.fastq.gz	4460_S2_L002_R2_001.fastq.gz	173
-4474	4474	PBMC	SPF	uninfected	S3	S03	4474_S3_L002	4474_S3_L002_R1_001.fastq.gz	4474_S3_L002_R2_001.fastq.gz	167
-4501	4501	PBMC	SPF	uninfected	S4	S04	4501_S4_L002	4501_S4_L002_R1_001.fastq.gz	4501_S4_L002_R2_001.fastq.gz	53
-4510	4510	PBMC	SPF	uninfected	S5	S05	4510_S5_L002	4510_S5_L002_R1_001.fastq.gz	4510_S5_L002_R2_001.fastq.gz	304
-4520	4520	PBMC	SPF	uninfected	S6	S06	4520_S6_L002	4520_S6_L002_R1_001.fastq.gz	4520_S6_L002_R2_001.fastq.gz	56
-DC1	DC1MINUS	fibroblast	outbred	uninfected	S7	S07	DC1MINUS_S7_L002	DC1MINUS_S7_L002_R1_001.fastq.gz	DC1MINUS_S7_L002_R2_001.fastq.gz	158
-DC1	DC1PLUS	fibroblast	outbred	infected	S8	S08	DC1PLUS_S8_L002	DC1PLUS_S8_L002_R1_001.fastq.gz	DC1PLUS_S8_L002_R2_001.fastq.gz	158
-DC2	DC2MINUES	fibroblast	outbred	uninfected	S9	S09	DC2MINUES_S9_L002	DC2MINUES_S9_L002_R1_001.fastq.gz	DC2MINUES_S9_L002_R2_001.fastq.gz	161
-DC2	DC2PLUS	fibroblast	outbred	infected	S10	S10	DC2_PLUS_S10_L002	DC2PLUS_S10_L002_R1_001.fastq.gz	DC2PLUS_S10_L002_R2_001.fastq.gz	161
-DC2	DC2Pool	fibroblast	outbred	unknown	none	S11	DC2Pool_NoIndex_L001	DC2Pool_NoIndex_L001_R1_001.fastq.gz	DC2Pool_NoIndex_L001_R2_001.fastq.gz	161
-DC3	DC3Pool	fibroblast	outbred	unknown	none	S12	DC3Pool_NoIndex_L001	DC3Pool_NoIndex_L001_R1_001.fastq.gz	DC3Pool_NoIndex_L001_R2_001.fastq.gz	NA
-DC4	DC4MINUS	fibroblast	outbred	uninfected	S11	S13	DC4MINUS_S11_L002	DC4MINUS_S11_L002_R1_001.fastq.gz	DC4MINUS_S11_L002_R2_001.fastq.gz	195
-DC4	DC4PLUS	fibroblast	outbred	infected	S12	S14	DC4PLUS_S12_L002	DC4PLUS_S12_L002_R1_001.fastq.gz	DC4PLUS_S12_L002_R2_001.fastq.gz	195
-Mischief	MischiefMinus	fibroblast	puma	uninfected	S12	S15	Mischief_Minus_S12_L002	Mischief_Minus_S12_L002_R1_001.fastq.gz	Mischief_Minus_S12_L002_R2_001.fastq.gz	NA
-Mischief	MischiefPlus	fibroblast	puma	infected	S11	S16	Mischief_Plus_S11_L002	Mischief_Plus_S11_L002_R1_001.fastq.gz	Mischief_Plus_S11_L002_R2_001.fastq.gz	NA
-X2654	X2654MINUS	fibroblast	outbred	uninfected	S13	S17	X2654MINUS_S13_L002	X2654MINUS_S13_L002_R1_001.fastq.gz	X2654MINUS_S13_L002_R2_001.fastq.gz	47
-X2654	X2654PLUS	fibroblast	outbred	infected	S14	S18	X2654PLUS_S14_L002	X2654PLUS_S14_L002_R1_001.fastq.gz	X2654PLUS_S14_L002_R2_001.fastq.gz	47
+cat_id	id_inf	cell_type	population	status	index	sample_id	no_ext	fastq1	fastq2	num_LTR	LTR_pmbc1	LTR_pmbc2	LTR_pmbc3
+4438	4438	PBMC	SPF	uninfected	S1	S01	4438_S1_L002	4438_S1_L002_R1_001.fastq.gz	4438_S1_L002_R2_001.fastq.gz	174	present	present	absent
+4460	4460	PBMC	SPF	uninfected	S2	S02	4460_S2_L002	4460_S2_L002_R1_001.fastq.gz	4460_S2_L002_R2_001.fastq.gz	173	present	absent	present
+4474	4474	PBMC	SPF	uninfected	S3	S03	4474_S3_L002	4474_S3_L002_R1_001.fastq.gz	4474_S3_L002_R2_001.fastq.gz	167	absent	present	present
+4501	4501	PBMC	SPF	uninfected	S4	S04	4501_S4_L002	4501_S4_L002_R1_001.fastq.gz	4501_S4_L002_R2_001.fastq.gz	53	absent	absent	absent
+4510	4510	PBMC	SPF	uninfected	S5	S05	4510_S5_L002	4510_S5_L002_R1_001.fastq.gz	4510_S5_L002_R2_001.fastq.gz	304	present	present	present
+4520	4520	PBMC	SPF	uninfected	S6	S06	4520_S6_L002	4520_S6_L002_R1_001.fastq.gz	4520_S6_L002_R2_001.fastq.gz	56	absent	absent	absent
+DC1	DC1MINUS	fibroblast	outbred	uninfected	S7	S07	DC1MINUS_S7_L002	DC1MINUS_S7_L002_R1_001.fastq.gz	DC1MINUS_S7_L002_R2_001.fastq.gz	158	NA	NA	NA
+DC1	DC1PLUS	fibroblast	outbred	infected	S8	S08	DC1PLUS_S8_L002	DC1PLUS_S8_L002_R1_001.fastq.gz	DC1PLUS_S8_L002_R2_001.fastq.gz	158	NA	NA	NA
+DC2	DC2MINUES	fibroblast	outbred	uninfected	S9	S09	DC2MINUES_S9_L002	DC2MINUES_S9_L002_R1_001.fastq.gz	DC2MINUES_S9_L002_R2_001.fastq.gz	161	NA	NA	NA
+DC2	DC2PLUS	fibroblast	outbred	infected	S10	S10	DC2_PLUS_S10_L002	DC2PLUS_S10_L002_R1_001.fastq.gz	DC2PLUS_S10_L002_R2_001.fastq.gz	161	NA	NA	NA
+DC2	DC2Pool	fibroblast	outbred	unknown	none	S11	DC2Pool_NoIndex_L001	DC2Pool_NoIndex_L001_R1_001.fastq.gz	DC2Pool_NoIndex_L001_R2_001.fastq.gz	161	NA	NA	NA
+DC3	DC3Pool	fibroblast	outbred	unknown	none	S12	DC3Pool_NoIndex_L001	DC3Pool_NoIndex_L001_R1_001.fastq.gz	DC3Pool_NoIndex_L001_R2_001.fastq.gz	NA	NA	NA	NA
+DC4	DC4MINUS	fibroblast	outbred	uninfected	S11	S13	DC4MINUS_S11_L002	DC4MINUS_S11_L002_R1_001.fastq.gz	DC4MINUS_S11_L002_R2_001.fastq.gz	195	NA	NA	NA
+DC4	DC4PLUS	fibroblast	outbred	infected	S12	S14	DC4PLUS_S12_L002	DC4PLUS_S12_L002_R1_001.fastq.gz	DC4PLUS_S12_L002_R2_001.fastq.gz	195	NA	NA	NA
+Mischief	MischiefMinus	fibroblast	puma	uninfected	S12	S15	Mischief_Minus_S12_L002	Mischief_Minus_S12_L002_R1_001.fastq.gz	Mischief_Minus_S12_L002_R2_001.fastq.gz	NA	NA	NA	NA
+Mischief	MischiefPlus	fibroblast	puma	infected	S11	S16	Mischief_Plus_S11_L002	Mischief_Plus_S11_L002_R1_001.fastq.gz	Mischief_Plus_S11_L002_R2_001.fastq.gz	NA	NA	NA	NA
+X2654	X2654MINUS	fibroblast	outbred	uninfected	S13	S17	X2654MINUS_S13_L002	X2654MINUS_S13_L002_R1_001.fastq.gz	X2654MINUS_S13_L002_R2_001.fastq.gz	47	NA	NA	NA
+X2654	X2654PLUS	fibroblast	outbred	infected	S14	S18	X2654PLUS_S14_L002	X2654PLUS_S14_L002_R1_001.fastq.gz	X2654PLUS_S14_L002_R2_001.fastq.gz	47	NA	NA	NA
