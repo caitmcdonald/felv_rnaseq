@@ -1,19 +1,23 @@
 enFeLV-exFeLV RNAseq: data and code repo
 ================
-Cait McDonald
+Coby McDonald
 
-  - [Overview](#overview)
-      - [References](#references)
-
-**last updated:** 2021-03-31
+**last updated:** 2021-08-10
 
 # Overview
 
-This repo will include code, data, and results related to RNAsequencing
-of fibroblasts and PMBCs infected with FeLV. Following work by Chiu et
-al. (insert hyperlink here), endogenous FeLV can potentially decrease
-the effects of exogenous FeLV infection in domestic cats. The goal of
-this RNAseq project is to identify whether enFeLV LTR insertion site
-significantly alters transcription of anti-exFeLV genes.
+## Project goal
 
-## References
+Following work by [Chiu et
+al. 2020](https://journals.asm.org/doi/full/10.1128/JVI.01274-20),
+endogenous FeLV can potentially decrease the effects of exogenous FeLV
+infection in domestic cats. The goal of this project is to identify
+whether enFeLV LTR integration site significantly alters transcription
+of host genes.
+
+## Contents
+
+This repo will include code, data, and results related to RNA-sequencing
+of fibroblasts and PMBCs from domestic cats and one puma. PMBCs were
+never infected with FeLV, so are included for baseline data. Fibroblast
+samples are matched and include infected and uninfected samples.
