@@ -47,10 +47,14 @@ metadat <- read_tsv("data/felv_metadata.tsv") %>% filter(id_inf != c("DC2Pool", 
 counts <- counts0 %>% select(!contains(c("Mischief", "DC", "X")))
 meta <- metadat %>% filter(cell_type=="PBMC")
 
+#remove puma
+counts <- counts0 %>% select(!contains("Mischief"))
+meta <- metadat %>% filter(cat_id!="Mischief")
+
 # group <- meta$status
-# group <- meta$cell_type
+group <- meta$cell_type
 # group <- meta$LTR_pmbc1
-group <- meta$LTR_pmbc2
+# group <- meta$LTR_pmbc2
 # group <- meta$LTR_pmbc3
 
 
@@ -71,7 +75,7 @@ dat.logCPM <- cpm(dat.norm, log=TRUE, prior.count = 1, normalized.lib.sizes = TR
 
 # write table for downstream (e.g. WGCNA)
 dat.logCPM.tbl <- cbind(dat.filt$genes, dat.logCPM)
-# write_delim(dat.logCPM.tbl, "results/edgeR/counts_fibros_all_filt25_log.txt", delim="\t")
+# write_delim(dat.logCPM.tbl, "results/edgeR/counts_nopuma_filt25_log.txt", delim="\t")
 
 
 #### 3. Generate PCA ####

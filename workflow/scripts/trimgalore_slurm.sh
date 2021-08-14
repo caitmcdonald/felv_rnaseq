@@ -14,7 +14,7 @@ export WORK=/scratch/summit/camcd@colostate.edu/felv_rnaseq/data/raw
 cd $WORK
 
 for i in $(ls *R1_001.fastq.gz | sed 's/\R1_001.fastq.gz//'); do
-    trim_galore --cores 20 --paired --retain_unpaired --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o ../trimmed ./$i\R1_001.fastq.gz ./$i\R2_001.fastq.gz;
+    trim_galore --cores 20 --paired --retain_unpaired --phred33 --length 36 -q 5 --stringency 1 -e 0.1 -o ../../results/trimgalore ./$i\R1_001.fastq.gz ./$i\R2_001.fastq.gz;
 done
 
 # runtime: 2.5 hrs

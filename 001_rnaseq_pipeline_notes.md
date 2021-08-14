@@ -1,6 +1,6 @@
 RNAseq pipeline notes
 ================
-Last Updated: 2021-08-11
+Last Updated: 2021-08-13
 
   - [Overview](#overview)
       - [RNA-seq samples](#rna-seq-samples)
@@ -188,7 +188,7 @@ The easiest way to do this is to read the gtf file into R and use
 
 ``` r
 library(rtracklayer)
-gtf <- rtracklayer::import("results/orthofinder/GCF_000181335.3_Felis_catus_9.0_genomic.gtf")
+gtf <- rtracklayer::import("resources/genome/GCF_000181335.3_Felis_catus_9.0_genomic.gtf")
 gene_tran_pro <- as.data.frame(mcols(gtf)[,c("gene_id","transcript_id","protein_id")])
 ```
 
@@ -196,7 +196,7 @@ Then, I can get a list of cat orthologs (protein\_id) from Orthofinder
 output (.csv file) and join to locate gene\_id:
 
 ``` r
-orthologs <- read_delim("results/orthofinder/GCF_000181335.3_Felis_catus_9.0_protein__v__GCF_003327715.1_PumCon1.0_protein.csv", delim="\t", col_names = c("Orthogroup","Cat_protein_id","puma_protein_id"), skip = 1) %>% 
+orthologs <- read_delim("results/orthofinder/Felis_catus__v__Puma_concolor.csv", delim="\t", col_names = c("Orthogroup","Cat_protein_id","puma_protein_id"), skip = 1) %>% 
   separate_rows(Cat_protein_id, convert=TRUE, sep = ", ")
 
 ortho_and_gene <- left_join(orthologs, gene_tran_pro, by=c("Cat_protein_id"="protein_id")) %>%
@@ -208,10 +208,10 @@ There are multiple proteins derived from each gene, so we need to drop
 repeats
 
 ``` r
-dat <- read_delim("readcountsmatrix.txt", delim = "\t") %>% select(-DC2Pool, -DC3Pool)
+dat <- read_delim("results/star_quant_bam/readcountsmatrix.txt", delim = "\t") %>% select(-DC2Pool, -DC3Pool)
 counts <- dat[-c(1:4, 31498),]
 
-counts_w_protein <- left_join(ortho_and_gene, counts, by=c("gene_id"="genes"))
+counts_w_protein <- left_join(ortho_and_gene, counts)
 
 counts_ortho_only <- counts_w_protein %>% 
   #select(-Cat_protein_id, -transcript_id) %>% 
@@ -236,14 +236,6 @@ I used this list of defined regions (which is in bed format) to query
 the [UCSC Table Browser](http://genome.ucsc.edu/cgi-bin/hgTables) to
 extract all genes within these windows in bed format.
 
-``` r
-LTR_genes <- read_delim("data/felCat9_1Mb_LTRsites_all.txt", delim="\t", skip = 1, col_names = F) %>% 
-  select(X4) %>% 
-  distinct()
-
-LTR_genes %>% summarise(n())
-```
-
 Based on the genes extracted from UCSC, it appears there are 31,076
 genes within 1 Mb of an LTR integration site. This is essentially the
 entire genome\! Thus, it’s not going to give us any more specific
@@ -251,19 +243,21 @@ results than we already have. Options for parsing this out better:
 
 **1. Restrict to \<1 Mb up and downstream.**
 
-    - The 1 Mb decision was because this is the maximum distance for LTR enhancer function. We could instead look just at promoter function? What would this distance be?
+  - The 1 Mb decision was because this is the maximum distance for LTR
+    enhancer function. We could instead look just at promoter function?
+    What would this distance be?
 
 **2. Pick out particularly interesting integration sites and look only
 at those.**
 
-    - For example, only the integration sites found in >10 cats
-    - __I'll use this second approach__
+  - For example, only the integration sites found in \>10 cats
+  - **I’ll use this second approach**
 
 #### Interesting integration sites
 
 **1. Fibroblasts: infected vs. uninfected** Restrict to LTR sites
 present in ≥3 (out of 4) fibroblast samples = [78 LTR
-sites](data/LTR_fibro_upanddown.txt)
+sites](data/ltr_data/LTR_fibro_upanddown.txt)
 
 ``` r
 gtf <- rtracklayer::import("results/orthofinder/GCF_000181335.3_Felis_catus_9.0_genomic.gtf")
@@ -279,17 +273,9 @@ LTR_fibro_genid <- left_join(LTR_fibro, gene_tran_pro, by=c("X4"="transcript_id"
 # write_tsv(LTR_fibro_genid, "data/LTR_fibro_genids.txt")
 ```
 
-This doesn’t yield any interesting genes…
-
 **2. PMBCs: present vs absent** Restrict to LTR sites present in 3 (out
 of 6) PMBC samples = [42 sites](data/LTR_pmbc_upanddown.txt). These need
 to be partitioned into three separate groups for comparison in edgeR.
-
-When we run a DGE analysis on these partitioned groups, we get:
-
-    __Set1:__ 15 sig genes; no sig LTR genes
-    __Set2:__ 51 sig genes; not sig LTR genes
-    __Set3:__ 1 significant gene; no significant LTR genes
 
 **3. Present in ≥10 cats** Restrict to sites only found in ≥10 cats in
 Elliott’s larger study = [87 sites](data/LTR_over10cats_upanddown.txt)
@@ -301,23 +287,26 @@ is super confounded…
 **3a. Compare PMBCs vs fibroblasts:** When restricting to genes 1Mb from
 LTR insertion sites present in \>10 cats, there are 687 significant
 genes. But, this isn’t meaningful at all\! The sites that are present in
-\>10 cats may or may not be present in the PMBC and fibroblast
-samples.If they aren’t present in one or the other, then the expression
-could be due to cell type or LTR presence/absence and there’s no way to
-tell. I could try to: a) restrict to only LTR sites present in BOTH, b)
-bin PMBC+fibro present vs PMBC+fibro absent and re-run. However, there
-are not enough samples to yield at least 3 bio reps per treatment in
-this design, so it’s also not an option.
+\>10 cats may or may not be present in the PMBC and fibroblast samples.
+If they aren’t present in one or the other, then the expression could be
+due to cell type or LTR presence/absence and there’s no way to tell. I
+could try to: a) restrict to only LTR sites present in BOTH, b) bin
+PMBC+fibro present vs PMBC+fibro absent and re-run. However, there are
+not enough samples to yield at least 3 bio reps per treatment in this
+design, so it’s also not an option.
 
 ### edgeR
 
-I used the [readcountsmatrix.txt](readcountsmatrix.txt) and the sample
+I used either the full
+[readcountsmatrix.txt](results/star_quant_bam/readcountsmatrix.txt) or
+the more restricted [cat-puma ortholog
+matrix](results/orthofinder/genecounts_orthologs.txt) and the sample
 [metadata](data/felv_metadata.tsv) to begin edgeR analyses.
 
-**Note:** when restricting to smaller gene sets (e.g. 1-3 above), all
+**Note 2:** When restricting to smaller gene sets (e.g. 1-3 above), all
 normalization and model fitting must be done on the full gene set. Then
-at the T-test to ID significant genes, I can restrict to genes of
-interest to recalculate the P-values. So, because there are no
+at the likelihood ratio test to ID significant genes, I can restrict to
+genes of interest to recalculate the P-values. So, because there are no
 significantly differentially expressed genes between infected and
 uninfected fibroblasts, there will be no significant genes from the
 restricted set \#1…
@@ -326,10 +315,10 @@ restricted set \#1…
 
 Code: [DGE\_dataexplore.R](workflow/scripts/DGE_dataexplore.R)
 
-Looking at all samples, we can see that there are 31,498 genes in the
+Looking at all samples, we can see that there are 31,493 genes in the
 full dataset. After modest filtering for sequence errors, that goes down
-to \~16,000 genes. Library size ranged from 2,692,910 (MischiefPlus) to
-33,912,615 (DC4PLUS). That’s way too few reads for the Mischief (puma)
+to \~16,000 genes. Library size ranged from 3,334,132 (MischiefPlus) to
+33,935,616 (DC4PLUS). That’s way too few reads for the Mischief (puma)
 samples. When we look at sample correlation and a PCA, we can also see
 that they’re way different from the other fibroblast samples, which is
 probably a function of poor sequencing, and is not biologically
@@ -341,24 +330,35 @@ analyses.
 
 Code: [DGE\_edgeR.R](workflow/scripts/DGE_edgeR.R)
 
-So there are a couple comparisons we can make:
+There are a few comparisons we can make:
 
+  - Uninfected vs. FeLV-infected differential expression (fibroblasts
+    only):
+      - Including puma samples: no sig DEG
+      - Excluding puma samples: [3 sig
+        DEG](results/edgeR/sigDGE_inf_uninf_nopuma.txt)
   - Cell type differential expression (PMBCs vs fibroblasts)
-  - uninfected vs. FeLV-infected differential expression (fibroblasts
-    only)
-  - LTR-specific:
-      - LTR+ vs LTR- PMBCs
-      - LTR+ vs LTR- fibroblasts, inf vs uninf
+      - Including puma samples: [5,611
+        DEG](results/edgeR/sigDGE_celltype_orthologs.txt)
+      - Excluding puma samples: [12,239
+        DEG](results/edgeR/sigDGE_celltype_nopuma.txt)
+  - LTR-specific (puma removed):
+      - LTR+ vs LTR- PMBCs:
+          - LTR PMBC set 1 (129 genes): no DEGs
+          - LTR PMBC set 2 (150 genes): no DEGs
+          - LTR PMBC set 3 (130 genes): no DEGs
+      - LTR+ vs LTR- fibroblasts, inf vs uninf: no DEGs
 
 Looking at cell type, 4510 is a big outlier, again I suspect due to poor
-sequencing, although Elliott says this animal has far more LTR sites
-than any of the other samples. We can’t really disentangle this because
-it did have far fewer reads sequenced than the other individuals, so it
-could either be sequencing or LTR number.
+sequencing (\~5M reads vs 20-30M reads), although Elliott says this
+animal has far more LTR sites than any of the other samples. We can’t
+really disentangle this because it did have far fewer reads sequenced
+than the other individuals, so it could either be sequencing or LTR
+integration site number.
 
 Expression is clearly cell-specific, which we would expect. There are
-\~6,000 genes significantly differentially expressed between fibroblasts
-and PMBCs.
+\>12,000 genes significantly differentially expressed between
+fibroblasts and PMBCs.
 
 Looking at FeLV infection status, we see that infection status plays a
 pretty negligible role. Samples cluster according to biological
@@ -371,3 +371,8 @@ proteins.
 We could try running WGCNA to look at how LTR copy number affects
 expression because WGCNA is good for correlating expression with
 continuous variables. However, we can’t use WGCNA for sample sizes \<15…
+
+I tried running WGCNA using [wgcna.R](workflow/scripts/wgcna.R),
+however, as expected, the model fit is really bad (R^2 of network
+topology fit is \<0.7 for both PMBCs and fibroblasts), and results are
+unstable.

@@ -22,7 +22,7 @@ export WORK=/scratch/summit/camcd@colostate.edu/felv_rnaseq
 export STARDIR=$WORK/resources/genome_star
 export FASTA=$WORK/resources/genome_ncbi/GCF_000181335.3_Felis_catus_9.0_genomic.fna
 export GTF=$WORK/resources/genome_ncbi/GCF_000181335.3_Felis_catus_9.0_genomic.gtf
-export SAMPLES=$WORK/data/trimmed
+export SAMPLES=$WORK/results/trimgalore
 export OUTDIR=$WORK/results/star_quant_bam
 
 

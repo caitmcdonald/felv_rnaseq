@@ -28,12 +28,13 @@ counts <- dat %>% slice(-c(1:4, 31498)) #all counts, not just orthologs; remove 
 
 ## metadata
 meta <- read_tsv("data/felv_metadata.tsv") %>% filter(id_inf != c("DC2Pool", "DC3Pool"))
+cell_inf=paste(meta$cell_type, meta$status, sep="_") #grouping
 
 
 #### 1. Create DGElist, filter by CPM, and calcNormFactors ####
 ## Create DGEList
 dat.full <- DGEList(counts=counts[,2:17], group=cell_inf, genes = counts[,1])
-# dat.full$samples
+dat.full$samples
 
 ## Filter
 keep_counts<-rowSums(cpm(counts[,2:17])>1) >= 0.25*ncol(dat) #filter >1 cpm in >= 1/4 of samples
@@ -55,7 +56,6 @@ dat.logCPM <- cpm(dat.norm, log=TRUE, prior.count = 1, normalized.lib.sizes = TR
 Cell_type=meta$cell_type
 Infection_status=meta$status
 Population=meta$population
-cell_inf=paste(meta$cell_type, meta$status, sep="_")
 
 annotation_col1 <- data.frame(
   Cell_type,

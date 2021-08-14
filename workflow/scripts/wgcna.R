@@ -28,18 +28,14 @@ library(here)
 #### 1. Load and transform data ####
 
 # Read in counts data (change tissue as necessary)
-# vP_dat <- read_delim("bpitanga_2018/bpit_varPar/varPar_0.66/top10_sep_nobatch_skin.txt", delim="\t")
-# counts <- read_delim("results/edgeR/counts_fibrouninf_filt25_log.txt", delim="\t")
-counts <- read_delim("results/edgeR/counts_fibros_all_filt25_log.txt", delim="\t")
+counts <- read_delim("results/edgeR/counts_nopuma_filt25_log.txt", delim="\t")
+# counts <- read_delim("results/edgeR/counts_fibros_all_filt25_log.txt", delim="\t")
 names(counts)
 
 dat0 <- counts
-# dat0 <- semi_join(counts, vP_dat, by=c("gene_id"="gene")) %>% 
-  # select(-transcript_id, -Blast_name, -Full_name, -GO_id) 
 
 
 # Read in trait data
-# traits <- read_delim("data/felv_metadata.tsv", delim="\t") %>% select(id_inf, num_LTR)
 traits <- read_delim("data/felv_metadata.tsv", delim="\t") %>% select(id_inf, status, num_LTR)
 traits0 <- filter(traits,id_inf %in% names(dat0)) %>% column_to_rownames("id_inf")
 # traits1 <- traits0
@@ -48,7 +44,7 @@ traits1 <- binarizeCategoricalColumns(traits0, convertColumns = c("status"), inc
 
 
 tdat <- as.data.frame(t(dat0[,-1]))
-names(tdat) <- dat0$genes  
+names(tdat) <- dat0$gene_id
 rownames(tdat) <- names(dat0)[-1]
 
 
@@ -70,7 +66,7 @@ plot(sampleTree, main = "Sample clustering to detect outliers", sub="", xlab="",
 ## Plot a line to show the (arbitrary) cut to remove outliers ##
 abline(h = 130, col = "red");
 # Determine cluster under the line
-clust = cutreeStatic(sampleTree, cutHeight = 130, minSize = 3)
+clust = cutreeStatic(sampleTree, cutHeight = 500, minSize = 3)
 table(clust)
 # clust 1 contains the samples we want to keep.
 
